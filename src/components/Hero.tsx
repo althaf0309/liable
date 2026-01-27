@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Search, Filter, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,12 +20,22 @@ const Hero = () => {
       {/* Content */}
       <div className="container-custom relative z-10 py-20">
         <div className="max-w-2xl">
-          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold text-background italic leading-tight mb-8">
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
+            className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold text-background italic leading-tight mb-8"
+          >
             Get Settled in the UK with Liable
-          </h1>
+          </motion.h1>
 
           {/* Search Box */}
-          <div className="bg-background/95 backdrop-blur-sm rounded-xl p-4 shadow-xl">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
+            className="bg-background/95 backdrop-blur-sm rounded-xl p-4 shadow-xl"
+          >
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {/* Keyword */}
               <div className="space-y-1">
@@ -65,7 +76,7 @@ const Hero = () => {
                 </Button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

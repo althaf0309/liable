@@ -1,4 +1,6 @@
+import { motion } from "framer-motion";
 import { Plane, Home, Coins, Briefcase } from "lucide-react";
+import AnimatedSection from "./AnimatedSection";
 
 const services = [
   {
@@ -36,7 +38,7 @@ const Services = () => {
     <section id="services" className="section-padding bg-cream">
       <div className="container-custom">
         {/* Header */}
-        <div className="text-center mb-16">
+        <AnimatedSection className="text-center mb-16">
           <span className="text-primary font-medium text-sm tracking-wider uppercase">
             Our Services
           </span>
@@ -44,22 +46,34 @@ const Services = () => {
             Explore Our Services for{" "}
             <span className="text-primary">Tenants</span>
           </h2>
-        </div>
+        </AnimatedSection>
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {services.map((service) => (
-            <div
+          {services.map((service, index) => (
+            <motion.div
               key={service.number}
-              className="bg-background rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.1,
+                ease: [0.21, 0.47, 0.32, 0.98],
+              }}
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              className="bg-background rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow duration-300"
             >
               <div className="flex items-start justify-between mb-6">
                 <span className="text-4xl font-light text-muted-foreground/30 font-serif">
                   {service.number}
                 </span>
-                <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center">
+                <motion.div
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  className="w-14 h-14 rounded-full bg-primary flex items-center justify-center"
+                >
                   <service.icon className="w-6 h-6 text-primary-foreground" />
-                </div>
+                </motion.div>
               </div>
               <h3 className="font-serif text-xl font-bold text-foreground mb-3">
                 {service.title}
@@ -67,7 +81,7 @@ const Services = () => {
               <p className="text-muted-foreground leading-relaxed">
                 {service.description}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
