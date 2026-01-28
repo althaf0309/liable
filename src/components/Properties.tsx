@@ -1,30 +1,163 @@
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AnimatedSection from "./AnimatedSection";
 import property1 from "@/assets/property-1.jpg";
 import property2 from "@/assets/property-2.jpg";
 import property3 from "@/assets/property-3.jpg";
+import { useRef, useState } from "react";
 
 const locations = [
   {
     name: "London",
+    properties: 12,
     subtitle: "Luxury Properties With Conveniences.",
     image: property1,
   },
   {
     name: "Manchester",
+    properties: 8,
     subtitle: "Modern Living Spaces.",
     image: property2,
   },
   {
     name: "Birmingham",
+    properties: 6,
     subtitle: "Affordable Quality Homes.",
     image: property3,
   },
+  {
+    name: "Leeds",
+    properties: 5,
+    subtitle: "Student-Friendly Accommodations.",
+    image: property1,
+  },
+  {
+    name: "Liverpool",
+    properties: 4,
+    subtitle: "Vibrant City Living.",
+    image: property2,
+  },
 ];
 
+interface PropertyCardProps {
+  location: typeof locations[0];
+  index: number;
+  isHovered: boolean;
+  onHover: () => void;
+  onLeave: () => void;
+}
+
+const PropertyCard = ({ location, index, isHovered, onHover, onLeave }: PropertyCardProps) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  
+  const springConfig = { damping: 25, stiffness: 300 };
+  const rotateX = useSpring(useTransform(y, [-100, 100], [10, -10]), springConfig);
+  const rotateY = useSpring(useTransform(x, [-100, 100], [-10, 10]), springConfig);
+  const scale = useSpring(1, springConfig);
+  
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    x.set(e.clientX - centerX);
+    y.set(e.clientY - centerY);
+  };
+  
+  const handleMouseEnter = () => {
+    scale.set(1.02);
+    onHover();
+  };
+  
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+    scale.set(1);
+    onLeave();
+  };
+
+  return (
+    <motion.div
+      ref={cardRef}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{
+        duration: 0.5,
+        delay: index * 0.1,
+        ease: [0.21, 0.47, 0.32, 0.98],
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX,
+        rotateY,
+        scale,
+        transformStyle: "preserve-3d",
+        flex: isHovered ? 2 : 1,
+      }}
+      className="relative overflow-hidden cursor-pointer h-[450px] transition-[flex] duration-500 ease-out"
+    >
+      <motion.img
+        src={location.image}
+        alt={location.name}
+        className="w-full h-full object-cover absolute inset-0"
+        style={{
+          scale: isHovered ? 1.1 : 1,
+          transition: "scale 0.5s ease-out",
+        }}
+      />
+      <div className={`absolute inset-0 transition-opacity duration-300 ${
+        isHovered 
+          ? "bg-gradient-to-t from-foreground/90 via-foreground/40 to-transparent" 
+          : "bg-gradient-to-t from-foreground/70 to-transparent"
+      }`} />
+      
+      {/* Content */}
+      <motion.div
+        className="absolute bottom-0 left-0 right-0 p-6 text-background"
+        style={{
+          transform: "translateZ(40px)",
+        }}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ 
+            opacity: isHovered ? 1 : 0.8, 
+            y: isHovered ? 0 : 10 
+          }}
+          transition={{ duration: 0.3 }}
+        >
+          <span className="text-primary text-sm font-medium flex items-center gap-2 mb-2">
+            <span className="w-4 h-px bg-primary" />
+            {location.properties} Properties
+          </span>
+          <h3 className="font-serif text-2xl md:text-3xl font-bold mb-2">{location.name}</h3>
+          <motion.p 
+            className="text-sm text-background/80 overflow-hidden"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ 
+              height: isHovered ? "auto" : 0, 
+              opacity: isHovered ? 1 : 0 
+            }}
+            transition={{ duration: 0.3 }}
+          >
+            {location.subtitle}
+          </motion.p>
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 const Properties = () => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
   return (
     <section id="properties" className="section-padding bg-background">
       <div className="container-custom">
@@ -72,44 +205,20 @@ const Properties = () => {
             </h2>
           </div>
 
-          {/* Locations Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+          {/* Locations Grid with Hover Effect */}
+          <div 
+            className="flex gap-1 overflow-hidden rounded-xl"
+            style={{ perspective: "1000px" }}
+          >
             {locations.map((location, index) => (
-              <motion.div
+              <PropertyCard
                 key={location.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 0.5,
-                  delay: index * 0.15,
-                  ease: [0.21, 0.47, 0.32, 0.98],
-                }}
-                className={`relative overflow-hidden group cursor-pointer ${
-                  index === 1 ? "md:scale-105 z-10" : ""
-                }`}
-              >
-                <div className="aspect-[3/4] overflow-hidden">
-                  <motion.img
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.5 }}
-                    src={location.image}
-                    alt={location.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 to-transparent" />
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 + index * 0.1 }}
-                    className="absolute bottom-0 left-0 right-0 p-6 text-background"
-                  >
-                    <h3 className="font-serif text-2xl font-bold">{location.name}</h3>
-                    <p className="text-sm text-background/80">{location.subtitle}</p>
-                  </motion.div>
-                </div>
-              </motion.div>
+                location={location}
+                index={index}
+                isHovered={hoveredIndex === index}
+                onHover={() => setHoveredIndex(index)}
+                onLeave={() => setHoveredIndex(null)}
+              />
             ))}
           </div>
         </AnimatedSection>
