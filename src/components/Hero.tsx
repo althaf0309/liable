@@ -42,44 +42,44 @@ const Hero = () => {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
-            className="bg-background/95 backdrop-blur-sm rounded-xl p-6 shadow-xl"
+            className="bg-background rounded-lg shadow-2xl overflow-hidden"
           >
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+            <div className="flex flex-col md:flex-row">
               {/* Keyword */}
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Keyword</label>
+              <div className="flex-1 p-5 border-b md:border-b-0 md:border-r border-border">
+                <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-2">Keyword</label>
                 <Input
                   placeholder="Looking For?"
-                  className="border-b border-border bg-transparent rounded-none px-0 h-10 text-foreground font-medium focus-visible:ring-0 focus-visible:border-primary"
+                  className="border-0 bg-transparent p-0 h-8 text-foreground text-sm font-medium focus-visible:ring-0 placeholder:text-muted-foreground/70"
                 />
               </div>
 
               {/* Category */}
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Category</label>
-                <button className="flex items-center justify-between w-full text-foreground font-medium h-10 border-b border-border hover:border-primary transition-colors">
+              <div className="flex-1 p-5 border-b md:border-b-0 md:border-r border-border">
+                <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-2">Category</label>
+                <button className="flex items-center justify-between w-full text-foreground text-sm font-medium h-8">
                   <span>Select Category</span>
                   <ChevronDown className="w-4 h-4 text-muted-foreground" />
                 </button>
               </div>
 
               {/* Location */}
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Location</label>
-                <button className="flex items-center justify-between w-full text-foreground font-medium h-10 border-b border-border hover:border-primary transition-colors">
+              <div className="flex-1 p-5 border-b md:border-b-0 md:border-r border-border">
+                <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-2">Location</label>
+                <button className="flex items-center justify-between w-full text-foreground text-sm font-medium h-8">
                   <span>Location</span>
                   <ChevronDown className="w-4 h-4 text-muted-foreground" />
                 </button>
               </div>
 
               {/* Actions */}
-              <div className="flex items-center gap-3">
-                <Button variant="outline" size="default" className="gap-2 h-10">
-                  <Filter className="w-4 h-4" />
+              <div className="flex items-center gap-3 p-5">
+                <Button variant="outline" size="sm" className="gap-2 h-9 px-4 text-xs font-medium">
+                  <Filter className="w-3.5 h-3.5" />
                   More
                 </Button>
-                <Button className="gap-2 flex-1 h-10">
-                  <Search className="w-4 h-4" />
+                <Button className="gap-2 h-9 px-6 text-xs font-medium">
+                  <Search className="w-3.5 h-3.5" />
                   Search
                 </Button>
               </div>
