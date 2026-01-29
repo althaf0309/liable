@@ -13,7 +13,7 @@ import logo from "@/assets/logo.png";
 const navLinks = [
   { name: "Home", href: "/" },
   { name: "About Us", href: "/about", isRoute: true },
-  { name: "Properties", href: "#properties" },
+  { name: "Properties", href: "/properties", isRoute: true },
   { name: "Services", href: "#services", hasDropdown: true },
   { name: "News", href: "#news" },
   { name: "Contact", href: "#contact" },
