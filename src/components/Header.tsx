@@ -16,7 +16,7 @@ const navLinks = [
   { name: "Properties", href: "/properties", isRoute: true },
   { name: "Services", href: "#services", hasDropdown: true },
   { name: "News", href: "/news", isRoute: true },
-  { name: "Contact", href: "#contact" },
+  { name: "Contact", href: "/contact", isRoute: true },
 ];
 
 const serviceOptions = [
