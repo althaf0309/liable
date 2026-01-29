@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, MapPin, Bed, Bath, Square, ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -200,9 +201,11 @@ const PropertyCard = ({ property }: { property: typeof properties[0] }) => {
             £{property.price.toLocaleString()}
             <span className="text-sm font-normal text-muted-foreground">/month</span>
           </span>
-          <Button size="sm" variant="outline">
-            View Details
-          </Button>
+          <Link to={`/properties/${property.id}`}>
+            <Button size="sm" variant="outline">
+              View Details
+            </Button>
+          </Link>
         </div>
       </div>
     </motion.div>
