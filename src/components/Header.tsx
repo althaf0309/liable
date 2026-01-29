@@ -12,7 +12,7 @@ import logo from "@/assets/logo.png";
 
 const navLinks = [
   { name: "Home", href: "/" },
-  { name: "About Us", href: "#about" },
+  { name: "About Us", href: "/about", isRoute: true },
   { name: "Properties", href: "#properties" },
   { name: "Services", href: "#services", hasDropdown: true },
   { name: "News", href: "#news" },
@@ -61,6 +61,14 @@ const Header = () => {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
+              ) : link.isRoute ? (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+                >
+                  {link.name}
+                </Link>
               ) : (
                 <a
                   key={link.name}
@@ -112,6 +120,15 @@ const Header = () => {
                       ))}
                     </div>
                   </div>
+                ) : link.isRoute ? (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    className="text-sm font-medium text-foreground hover:text-primary transition-colors px-4 py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
                 ) : (
                   <a
                     key={link.name}
