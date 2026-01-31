@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, Search, ChevronDown } from "lucide-react";
+import { Menu, X, Search, ChevronDown, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -90,11 +90,17 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Search Button */}
-          <div className="hidden lg:flex items-center gap-4">
+          {/* Search & Login Buttons */}
+          <div className="hidden lg:flex items-center gap-3">
             <Button variant="ghost" size="icon" className="rounded-full border border-border">
               <Search className="w-5 h-5" />
             </Button>
+            <Link to="/auth">
+              <Button variant="default" size="sm" className="gap-2">
+                <User className="w-4 h-4" />
+                Login
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -160,6 +166,15 @@ const Header = () => {
                   </a>
                 )
               ))}
+              {/* Mobile Login Button */}
+              <div className="px-4 pt-4 border-t border-border mt-2">
+                <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="default" size="sm" className="w-full gap-2">
+                    <User className="w-4 h-4" />
+                    Login / Sign Up
+                  </Button>
+                </Link>
+              </div>
             </div>
           </nav>
         )}
