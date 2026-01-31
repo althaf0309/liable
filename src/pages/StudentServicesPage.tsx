@@ -1,13 +1,24 @@
 import { motion } from "framer-motion";
-import { Plane, Home, Coins, Briefcase, GraduationCap, Users, FileText, CreditCard, MapPin, Phone, Mail, CheckCircle } from "lucide-react";
+import { useState } from "react";
+import { Plane, Home, Coins, Briefcase, GraduationCap, Users, FileText, CreditCard, MapPin, Phone, Mail, CheckCircle, Send } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import AnimatedSection from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import heroImage from "@/assets/hero-image.jpg";
 import { Link } from "react-router-dom";
-
 const services = [
   {
     icon: Plane,
@@ -59,6 +70,59 @@ const additionalServices = [
 ];
 
 const StudentServicesPage = () => {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    nationality: "",
+    university: "",
+    course: "",
+    arrivalDate: "",
+    accommodationType: "",
+    budget: "",
+    servicesNeeded: "",
+    additionalInfo: "",
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Simulate form submission
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    toast({
+      title: "Registration Submitted!",
+      description: "Thank you for registering. Our team will contact you within 24 hours.",
+    });
+
+    setFormData({
+      fullName: "",
+      email: "",
+      phone: "",
+      nationality: "",
+      university: "",
+      course: "",
+      arrivalDate: "",
+      accommodationType: "",
+      budget: "",
+      servicesNeeded: "",
+      additionalInfo: "",
+    });
+    setIsSubmitting(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -171,6 +235,202 @@ const StudentServicesPage = () => {
           </div>
         </div>
 
+        {/* Student Registration Form */}
+        <div id="register" className="section-padding bg-cream">
+          <div className="container-custom">
+            <AnimatedSection className="text-center mb-12">
+              <span className="text-primary font-semibold text-sm tracking-widest uppercase">
+                Get Started
+              </span>
+              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mt-4">
+                Register as a Student
+              </h2>
+              <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
+                Fill out the form below and our team will reach out to help you with your UK journey.
+              </p>
+            </AnimatedSection>
+
+            <AnimatedSection delay={0.2}>
+              <form onSubmit={handleSubmit} className="max-w-3xl mx-auto bg-background rounded-2xl p-8 shadow-lg">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Personal Information */}
+                  <div className="md:col-span-2">
+                    <h3 className="font-semibold text-lg text-foreground mb-4 border-b border-border pb-2">
+                      Personal Information
+                    </h3>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="fullName">Full Name *</Label>
+                    <Input
+                      id="fullName"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleInputChange}
+                      placeholder="Enter your full name"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email Address *</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="your@email.com"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone Number *</Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="+44 xxx xxx xxxx"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="nationality">Nationality *</Label>
+                    <Input
+                      id="nationality"
+                      name="nationality"
+                      value={formData.nationality}
+                      onChange={handleInputChange}
+                      placeholder="Your country of origin"
+                      required
+                    />
+                  </div>
+
+                  {/* Academic Information */}
+                  <div className="md:col-span-2 mt-4">
+                    <h3 className="font-semibold text-lg text-foreground mb-4 border-b border-border pb-2">
+                      Academic Information
+                    </h3>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="university">University/Institution *</Label>
+                    <Input
+                      id="university"
+                      name="university"
+                      value={formData.university}
+                      onChange={handleInputChange}
+                      placeholder="e.g., University of London"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="course">Course/Program *</Label>
+                    <Input
+                      id="course"
+                      name="course"
+                      value={formData.course}
+                      onChange={handleInputChange}
+                      placeholder="e.g., MSc Computer Science"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="arrivalDate">Expected Arrival Date</Label>
+                    <Input
+                      id="arrivalDate"
+                      name="arrivalDate"
+                      type="date"
+                      value={formData.arrivalDate}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+
+                  {/* Accommodation Preferences */}
+                  <div className="md:col-span-2 mt-4">
+                    <h3 className="font-semibold text-lg text-foreground mb-4 border-b border-border pb-2">
+                      Accommodation Preferences
+                    </h3>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Accommodation Type</Label>
+                    <Select value={formData.accommodationType} onValueChange={(value) => handleSelectChange("accommodationType", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="shared">Shared Room</SelectItem>
+                        <SelectItem value="private">Private Room</SelectItem>
+                        <SelectItem value="studio">Studio Apartment</SelectItem>
+                        <SelectItem value="1bed">1 Bedroom Flat</SelectItem>
+                        <SelectItem value="any">No Preference</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Monthly Budget (£)</Label>
+                    <Select value={formData.budget} onValueChange={(value) => handleSelectChange("budget", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select budget range" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="under500">Under £500</SelectItem>
+                        <SelectItem value="500-750">£500 - £750</SelectItem>
+                        <SelectItem value="750-1000">£750 - £1000</SelectItem>
+                        <SelectItem value="1000-1500">£1000 - £1500</SelectItem>
+                        <SelectItem value="over1500">Over £1500</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <Label>Services Needed</Label>
+                    <Select value={formData.servicesNeeded} onValueChange={(value) => handleSelectChange("servicesNeeded", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select primary service" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="airport">Airport Pickup & Orientation</SelectItem>
+                        <SelectItem value="accommodation">Accommodation Only</SelectItem>
+                        <SelectItem value="full">Full Support Package</SelectItem>
+                        <SelectItem value="career">Career & CV Support</SelectItem>
+                        <SelectItem value="banking">Banking & Finance Assistance</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="additionalInfo">Additional Information</Label>
+                    <Textarea
+                      id="additionalInfo"
+                      name="additionalInfo"
+                      value={formData.additionalInfo}
+                      onChange={handleInputChange}
+                      placeholder="Tell us more about your needs, preferences, or any questions you have..."
+                      rows={4}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-8 text-center">
+                  <Button type="submit" size="lg" className="gap-2" disabled={isSubmitting}>
+                    <Send className="w-4 h-4" />
+                    {isSubmitting ? "Submitting..." : "Submit Registration"}
+                  </Button>
+                </div>
+              </form>
+            </AnimatedSection>
+          </div>
+        </div>
+
         {/* CTA Section */}
         <div className="py-16 md:py-20 bg-primary">
           <div className="container-custom">
@@ -184,12 +444,12 @@ const StudentServicesPage = () => {
                 Get in touch today and let us help you make your student life easier.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link to="/contact">
+                <a href="#register">
                   <Button size="lg" variant="secondary" className="gap-2">
-                    <Mail className="w-4 h-4" />
-                    Contact Us
+                    <GraduationCap className="w-4 h-4" />
+                    Register Now
                   </Button>
-                </Link>
+                </a>
                 <a href="tel:+447867108050">
                   <Button size="lg" variant="outline" className="gap-2 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
                     <Phone className="w-4 h-4" />

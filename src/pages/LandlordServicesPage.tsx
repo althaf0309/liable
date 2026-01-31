@@ -1,10 +1,22 @@
 import { motion } from "framer-motion";
-import { Building2, Shield, Users, Wallet, ClipboardCheck, Wrench, BarChart3, Handshake, Phone, Mail, CheckCircle, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { Building2, Shield, Users, Wallet, ClipboardCheck, Wrench, BarChart3, Handshake, Phone, Mail, CheckCircle, ArrowRight, Send } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import AnimatedSection from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import heroImage from "@/assets/hero-slide-2.jpg";
 import { Link } from "react-router-dom";
 
@@ -66,6 +78,59 @@ const stats = [
 ];
 
 const LandlordServicesPage = () => {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    propertyAddress: "",
+    propertyType: "",
+    numberOfProperties: "",
+    bedrooms: "",
+    currentStatus: "",
+    expectedRent: "",
+    servicesRequired: "",
+    additionalInfo: "",
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Simulate form submission
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    toast({
+      title: "Registration Submitted!",
+      description: "Thank you for your interest. Our property team will contact you within 24 hours.",
+    });
+
+    setFormData({
+      fullName: "",
+      email: "",
+      phone: "",
+      propertyAddress: "",
+      propertyType: "",
+      numberOfProperties: "",
+      bedrooms: "",
+      currentStatus: "",
+      expectedRent: "",
+      servicesRequired: "",
+      additionalInfo: "",
+    });
+    setIsSubmitting(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -203,6 +268,203 @@ const LandlordServicesPage = () => {
           </div>
         </div>
 
+        {/* Landlord Registration Form */}
+        <div id="register" className="section-padding bg-cream">
+          <div className="container-custom">
+            <AnimatedSection className="text-center mb-12">
+              <span className="text-primary font-semibold text-sm tracking-widest uppercase">
+                Get Started
+              </span>
+              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mt-4">
+                Register Your Property
+              </h2>
+              <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
+                Fill out the form below and our property team will contact you for a free valuation.
+              </p>
+            </AnimatedSection>
+
+            <AnimatedSection delay={0.2}>
+              <form onSubmit={handleSubmit} className="max-w-3xl mx-auto bg-background rounded-2xl p-8 shadow-lg">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Personal Information */}
+                  <div className="md:col-span-2">
+                    <h3 className="font-semibold text-lg text-foreground mb-4 border-b border-border pb-2">
+                      Contact Information
+                    </h3>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="fullName">Full Name *</Label>
+                    <Input
+                      id="fullName"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleInputChange}
+                      placeholder="Enter your full name"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email Address *</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="your@email.com"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="phone">Phone Number *</Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="+44 xxx xxx xxxx"
+                      required
+                    />
+                  </div>
+
+                  {/* Property Information */}
+                  <div className="md:col-span-2 mt-4">
+                    <h3 className="font-semibold text-lg text-foreground mb-4 border-b border-border pb-2">
+                      Property Details
+                    </h3>
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="propertyAddress">Property Address *</Label>
+                    <Input
+                      id="propertyAddress"
+                      name="propertyAddress"
+                      value={formData.propertyAddress}
+                      onChange={handleInputChange}
+                      placeholder="Full address including postcode"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Property Type *</Label>
+                    <Select value={formData.propertyType} onValueChange={(value) => handleSelectChange("propertyType", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="flat">Flat / Apartment</SelectItem>
+                        <SelectItem value="house">House</SelectItem>
+                        <SelectItem value="studio">Studio</SelectItem>
+                        <SelectItem value="hmo">HMO (House in Multiple Occupation)</SelectItem>
+                        <SelectItem value="commercial">Commercial Property</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Number of Bedrooms</Label>
+                    <Select value={formData.bedrooms} onValueChange={(value) => handleSelectChange("bedrooms", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select bedrooms" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="studio">Studio</SelectItem>
+                        <SelectItem value="1">1 Bedroom</SelectItem>
+                        <SelectItem value="2">2 Bedrooms</SelectItem>
+                        <SelectItem value="3">3 Bedrooms</SelectItem>
+                        <SelectItem value="4">4 Bedrooms</SelectItem>
+                        <SelectItem value="5+">5+ Bedrooms</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Number of Properties</Label>
+                    <Select value={formData.numberOfProperties} onValueChange={(value) => handleSelectChange("numberOfProperties", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="How many properties?" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">1 Property</SelectItem>
+                        <SelectItem value="2-5">2-5 Properties</SelectItem>
+                        <SelectItem value="6-10">6-10 Properties</SelectItem>
+                        <SelectItem value="10+">10+ Properties</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Current Status</Label>
+                    <Select value={formData.currentStatus} onValueChange={(value) => handleSelectChange("currentStatus", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Property status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="vacant">Vacant - Ready to Let</SelectItem>
+                        <SelectItem value="tenanted">Currently Tenanted</SelectItem>
+                        <SelectItem value="refurbishment">Needs Refurbishment</SelectItem>
+                        <SelectItem value="purchasing">Purchasing Soon</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="expectedRent">Expected Monthly Rent (£)</Label>
+                    <Input
+                      id="expectedRent"
+                      name="expectedRent"
+                      type="text"
+                      value={formData.expectedRent}
+                      onChange={handleInputChange}
+                      placeholder="e.g., 1500"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Services Required</Label>
+                    <Select value={formData.servicesRequired} onValueChange={(value) => handleSelectChange("servicesRequired", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select service" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="full">Full Property Management</SelectItem>
+                        <SelectItem value="tenant-find">Tenant Find Only</SelectItem>
+                        <SelectItem value="rent-collection">Rent Collection Only</SelectItem>
+                        <SelectItem value="guaranteed-rent">Guaranteed Rent Scheme</SelectItem>
+                        <SelectItem value="consultation">Free Consultation First</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="additionalInfo">Additional Information</Label>
+                    <Textarea
+                      id="additionalInfo"
+                      name="additionalInfo"
+                      value={formData.additionalInfo}
+                      onChange={handleInputChange}
+                      placeholder="Tell us more about your property, any specific requirements, or questions you have..."
+                      rows={4}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-8 text-center">
+                  <Button type="submit" size="lg" className="gap-2" disabled={isSubmitting}>
+                    <Send className="w-4 h-4" />
+                    {isSubmitting ? "Submitting..." : "Submit Registration"}
+                  </Button>
+                </div>
+              </form>
+            </AnimatedSection>
+          </div>
+        </div>
+
         {/* List Your Property CTA */}
         <div className="py-16 md:py-20 bg-primary">
           <div className="container-custom">
@@ -217,12 +479,12 @@ const LandlordServicesPage = () => {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row items-center gap-4">
-                <Link to="/contact">
+                <a href="#register">
                   <Button size="lg" variant="secondary" className="gap-2">
-                    Get Free Valuation
+                    Register Now
                     <ArrowRight className="w-4 h-4" />
                   </Button>
-                </Link>
+                </a>
                 <a href="tel:+447867108050">
                   <Button size="lg" variant="outline" className="gap-2 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
                     <Phone className="w-4 h-4" />
