@@ -75,7 +75,7 @@ const Hero = () => {
   }, [nextSlide]);
 
   return (
-    <section ref={containerRef} className="relative min-h-[100svh] flex items-center pt-20 overflow-hidden">
+    <section ref={containerRef} className="relative h-[100svh] flex items-center pt-20 overflow-hidden">
       {/* Background Carousel with Parallax */}
       <motion.div 
         className="absolute inset-0 z-0"
