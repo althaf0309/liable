@@ -75,7 +75,7 @@ const Hero = () => {
   }, [nextSlide]);
 
   return (
-    <section ref={containerRef} className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+    <section ref={containerRef} className="relative min-h-[100svh] flex items-center pt-20 overflow-hidden">
       {/* Background Carousel with Parallax */}
       <motion.div 
         className="absolute inset-0 z-0"
@@ -93,34 +93,34 @@ const Hero = () => {
             className="w-full h-[120%] object-cover absolute inset-0"
           />
         </AnimatePresence>
-        <div className="absolute inset-0 bg-gradient-to-r from-foreground/60 via-foreground/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-foreground/70 via-foreground/50 to-foreground/30 md:from-foreground/60 md:via-foreground/30 md:to-transparent" />
       </motion.div>
 
-      {/* Carousel Navigation Arrows */}
+      {/* Carousel Navigation Arrows - Hidden on mobile */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-background/20 backdrop-blur-sm flex items-center justify-center text-background hover:bg-background/40 transition-colors"
+        className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-background/20 backdrop-blur-sm hidden sm:flex items-center justify-center text-background hover:bg-background/40 transition-colors"
         aria-label="Previous slide"
       >
-        <ChevronLeft className="w-6 h-6" />
+        <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-background/20 backdrop-blur-sm flex items-center justify-center text-background hover:bg-background/40 transition-colors"
+        className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-background/20 backdrop-blur-sm hidden sm:flex items-center justify-center text-background hover:bg-background/40 transition-colors"
         aria-label="Next slide"
       >
-        <ChevronRight className="w-6 h-6" />
+        <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
       </button>
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+      <div className="absolute bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 md:w-2.5 md:h-2.5 rounded-full transition-all duration-300 ${
               index === currentSlide 
-                ? "bg-primary w-8" 
+                ? "bg-primary w-6 md:w-8" 
                 : "bg-background/50 hover:bg-background/80"
             }`}
             aria-label={`Go to slide ${index + 1}`}
@@ -129,7 +129,7 @@ const Hero = () => {
       </div>
 
       {/* Content */}
-      <div className="container-custom relative z-10 py-20">
+      <div className="container-custom relative z-10 py-12 md:py-20 px-4">
         <div className="max-w-2xl">
           <AnimatePresence mode="wait">
             <motion.div
@@ -139,10 +139,10 @@ const Hero = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
             >
-              <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold text-background italic leading-tight mb-4">
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-background italic leading-tight mb-3 md:mb-4">
                 {slides[currentSlide].title}
               </h1>
-              <p className="text-background/90 text-lg md:text-xl mb-8">
+              <p className="text-background/90 text-base md:text-lg lg:text-xl mb-6 md:mb-8">
                 {slides[currentSlide].subtitle}
               </p>
             </motion.div>
@@ -157,19 +157,19 @@ const Hero = () => {
           >
             <div className="flex flex-col md:flex-row">
               {/* Keyword */}
-              <div className="flex-1 p-5 border-b md:border-b-0 md:border-r border-border">
-                <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-2">Keyword</label>
+              <div className="flex-1 p-4 md:p-5 border-b md:border-b-0 md:border-r border-border">
+                <label className="text-[10px] md:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5 md:mb-2">Keyword</label>
                 <Input
                   placeholder="Looking For?"
-                  className="border-0 bg-transparent p-0 h-8 text-foreground text-sm font-medium focus-visible:ring-0 placeholder:text-muted-foreground/70"
+                  className="border-0 bg-transparent p-0 h-7 md:h-8 text-foreground text-sm font-medium focus-visible:ring-0 placeholder:text-muted-foreground/70"
                 />
               </div>
 
               {/* Category */}
-              <div className="flex-1 p-5 border-b md:border-b-0 md:border-r border-border">
-                <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-2">Category</label>
+              <div className="flex-1 p-4 md:p-5 border-b md:border-b-0 md:border-r border-border">
+                <label className="text-[10px] md:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5 md:mb-2">Category</label>
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="border-0 bg-transparent p-0 h-8 text-foreground text-sm font-medium focus:ring-0 [&>svg]:text-muted-foreground">
+                  <SelectTrigger className="border-0 bg-transparent p-0 h-7 md:h-8 text-foreground text-sm font-medium focus:ring-0 [&>svg]:text-muted-foreground">
                     <SelectValue placeholder="Select Category" />
                   </SelectTrigger>
                   <SelectContent className="bg-background border-border z-50">
@@ -183,10 +183,10 @@ const Hero = () => {
               </div>
 
               {/* Location */}
-              <div className="flex-1 p-5 border-b md:border-b-0 md:border-r border-border">
-                <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-2">Location</label>
+              <div className="flex-1 p-4 md:p-5 border-b md:border-b-0 md:border-r border-border">
+                <label className="text-[10px] md:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5 md:mb-2">Location</label>
                 <Select value={location} onValueChange={setLocation}>
-                  <SelectTrigger className="border-0 bg-transparent p-0 h-8 text-foreground text-sm font-medium focus:ring-0 [&>svg]:text-muted-foreground">
+                  <SelectTrigger className="border-0 bg-transparent p-0 h-7 md:h-8 text-foreground text-sm font-medium focus:ring-0 [&>svg]:text-muted-foreground">
                     <SelectValue placeholder="Select Location" />
                   </SelectTrigger>
                   <SelectContent className="bg-background border-border z-50">
@@ -200,13 +200,13 @@ const Hero = () => {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center gap-3 p-5">
-                <Button variant="outline" size="sm" className="gap-2 h-9 px-4 text-xs font-medium">
-                  <Filter className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-2 md:gap-3 p-4 md:p-5">
+                <Button variant="outline" size="sm" className="gap-1.5 md:gap-2 h-8 md:h-9 px-3 md:px-4 text-xs font-medium">
+                  <Filter className="w-3 h-3 md:w-3.5 md:h-3.5" />
                   More
                 </Button>
-                <Button className="gap-2 h-9 px-6 text-xs font-medium">
-                  <Search className="w-3.5 h-3.5" />
+                <Button className="gap-1.5 md:gap-2 h-8 md:h-9 px-4 md:px-6 text-xs font-medium flex-1 md:flex-none">
+                  <Search className="w-3 h-3 md:w-3.5 md:h-3.5" />
                   Search
                 </Button>
               </div>
