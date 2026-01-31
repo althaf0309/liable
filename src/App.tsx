@@ -10,6 +10,8 @@ import PropertyDetailsPage from "./pages/PropertyDetailsPage";
 import NewsPage from "./pages/NewsPage";
 import BlogDetailsPage from "./pages/BlogDetailsPage";
 import ContactPage from "./pages/ContactPage";
+import StudentServicesPage from "./pages/StudentServicesPage";
+import LandlordServicesPage from "./pages/LandlordServicesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +30,8 @@ const App = () => (
           <Route path="/news" element={<NewsPage />} />
           <Route path="/news/:id" element={<BlogDetailsPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/services/students" element={<StudentServicesPage />} />
+          <Route path="/services/landlords" element={<LandlordServicesPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
