@@ -20,8 +20,8 @@ const navLinks = [
 ];
 
 const serviceOptions = [
-  { name: "Students", href: "#services-students" },
-  { name: "Landlords", href: "#services-landlords" },
+  { name: "Students", href: "/services/students", isRoute: true },
+  { name: "Landlords", href: "/services/landlords", isRoute: true },
 ];
 
 const Header = () => {
@@ -51,12 +51,21 @@ const Header = () => {
                   <DropdownMenuContent align="start" className="bg-background border border-border shadow-lg z-50">
                     {serviceOptions.map((option) => (
                       <DropdownMenuItem key={option.name} asChild>
-                        <a
-                          href={option.href}
-                          className="cursor-pointer text-sm font-medium text-foreground hover:text-primary hover:bg-accent px-4 py-2"
-                        >
-                          {option.name}
-                        </a>
+                        {option.isRoute ? (
+                          <Link
+                            to={option.href}
+                            className="cursor-pointer text-sm font-medium text-foreground hover:text-primary hover:bg-accent px-4 py-2"
+                          >
+                            {option.name}
+                          </Link>
+                        ) : (
+                          <a
+                            href={option.href}
+                            className="cursor-pointer text-sm font-medium text-foreground hover:text-primary hover:bg-accent px-4 py-2"
+                          >
+                            {option.name}
+                          </a>
+                        )}
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
@@ -109,14 +118,25 @@ const Header = () => {
                     <span className="text-sm font-medium text-foreground px-4 py-2">{link.name}</span>
                     <div className="flex flex-col pl-6">
                       {serviceOptions.map((option) => (
-                        <a
-                          key={option.name}
-                          href={option.href}
-                          className="text-sm text-muted-foreground hover:text-primary transition-colors px-4 py-2"
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          {option.name}
-                        </a>
+                        option.isRoute ? (
+                          <Link
+                            key={option.name}
+                            to={option.href}
+                            className="text-sm text-muted-foreground hover:text-primary transition-colors px-4 py-2"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {option.name}
+                          </Link>
+                        ) : (
+                          <a
+                            key={option.name}
+                            href={option.href}
+                            className="text-sm text-muted-foreground hover:text-primary transition-colors px-4 py-2"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {option.name}
+                          </a>
+                        )
                       ))}
                     </div>
                   </div>
