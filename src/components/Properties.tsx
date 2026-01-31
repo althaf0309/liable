@@ -103,7 +103,7 @@ const PropertyCard = ({ location, index, isHovered, onHover, onLeave }: Property
         transformStyle: "preserve-3d",
         flex: isHovered ? 2 : 1,
       }}
-      className="relative overflow-hidden cursor-pointer h-[450px] transition-[flex] duration-500 ease-out"
+      className="relative overflow-hidden cursor-pointer h-[200px] md:h-[450px] transition-[flex] duration-500 ease-out md:flex-1"
     >
       <motion.img
         src={location.image}
@@ -162,9 +162,9 @@ const Properties = () => {
 
   return (
     <section id="properties" className="section-padding bg-background">
-      <div className="container-custom">
+      <div className="container-custom px-4 md:px-8">
         {/* Banner */}
-        <AnimatedSection className="bg-cream rounded-3xl p-8 md:p-12 mb-16 relative overflow-hidden">
+        <AnimatedSection className="bg-cream rounded-2xl md:rounded-3xl p-6 md:p-12 mb-8 md:mb-16 relative overflow-hidden">
           {/* Decorative lines */}
           <div className="absolute inset-0 opacity-10">
             <svg className="w-full h-full" viewBox="0 0 1200 400">
@@ -183,12 +183,12 @@ const Properties = () => {
           </div>
 
           <div className="relative z-10 max-w-2xl">
-            <span className="text-primary font-medium text-sm tracking-wider">Properties</span>
-            <h2 className="font-serif text-3xl md:text-5xl font-bold text-foreground mt-3 mb-6">
+            <span className="text-primary font-medium text-xs md:text-sm tracking-wider">Properties</span>
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl font-bold text-foreground mt-2 md:mt-3 mb-4 md:mb-6">
               Welcome to Our <span className="text-primary">Inclusive Residences</span>—Where Quality Living Meets Affordability
             </h2>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-              <Button variant="outline" className="gap-2">
+              <Button variant="outline" className="gap-2 text-sm">
                 <Home className="w-4 h-4" />
                 View Properties
               </Button>
@@ -197,19 +197,19 @@ const Properties = () => {
         </AnimatedSection>
 
         {/* Top Locations */}
-        <AnimatedSection delay={0.2} className="bg-cream rounded-3xl py-16 px-8">
-          <div className="text-center mb-12">
-            <span className="text-primary font-medium text-sm tracking-wider uppercase">
+        <AnimatedSection delay={0.2} className="bg-cream rounded-2xl md:rounded-3xl py-8 md:py-16 px-4 md:px-8">
+          <div className="text-center mb-8 md:mb-12">
+            <span className="text-primary font-medium text-xs md:text-sm tracking-wider uppercase">
               Our Property List
             </span>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mt-3">
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mt-2 md:mt-3">
               Our Top Location For You Property
             </h2>
           </div>
 
-          {/* Locations Grid with Hover Effect */}
+          {/* Locations Grid - Stacked on mobile, flex on desktop */}
           <div 
-            className="flex gap-1 overflow-hidden rounded-xl"
+            className="flex flex-col md:flex-row gap-2 md:gap-1 overflow-hidden rounded-xl"
             style={{ perspective: "1000px" }}
           >
             {locations.map((location, index) => (
