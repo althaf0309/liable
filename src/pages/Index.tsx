@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
+import InnovationPreview from "@/components/InnovationPreview";
 import About from "@/components/About";
 import Properties from "@/components/Properties";
 import Booking from "@/components/Booking";
@@ -16,9 +17,10 @@ const Index = () => {
       <main>
         <Hero />
         <Services />
+        <InnovationPreview />
         <About />
         <Properties />
-        <Booking />
+        {/* <Booking /> */}
         <Blog />
         <Contact />
       </main>

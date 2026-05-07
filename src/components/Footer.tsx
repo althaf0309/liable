@@ -5,16 +5,17 @@ import AnimatedSection from "./AnimatedSection";
 
 const quickLinks = [
   { name: "Home", href: "/" },
-  { name: "About Us", href: "#about" },
-  { name: "News", href: "#news" },
-  { name: "Properties", href: "#properties" },
-  { name: "Student's Services", href: "#services" },
-  { name: "Landlord's Services", href: "#services" },
+  { name: "About Us", href: "/about" },
+  { name: "Innovation", href: "/innovation" },
+  { name: "News", href: "/news" },
+  { name: "Properties", href: "/properties" },
+  { name: "Student's Services", href: "/services/students" },
+  { name: "Landlord's Services", href: "/services/landlords" },
 ];
 
 const otherLinks = [
-  { name: "Terms & Conditions", href: "#" },
-  { name: "Privacy Policy", href: "#" },
+  { name: "Terms & Conditions", href: "/terms-and-conditions" },
+  { name: "Privacy Policy", href: "/privacy-policy" },
 ];
 
 const Footer = () => {
@@ -69,7 +70,7 @@ const Footer = () => {
               </div>
             </Link>
             <p className="text-muted-foreground text-sm mb-6">
-              Live Better, Rent Smarter – Student & Short-Term Homes Made Easy.
+              Controlled student housing infrastructure for tenancy readiness, allocation, and occupancy continuity.
             </p>
             <div className="flex items-center gap-3">
               <span className="text-muted-foreground text-sm">Follow on</span>
@@ -100,13 +101,13 @@ const Footer = () => {
                   viewport={{ once: true }}
                   transition={{ delay: 0.3 + index * 0.05 }}
                 >
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.href}
                     className="text-muted-foreground hover:text-primary transition-colors text-sm flex items-center gap-2 group"
                   >
                     <ChevronRight className="w-3 h-3 text-primary group-hover:translate-x-1 transition-transform" />
                     {link.name}
-                  </a>
+                  </Link>
                 </motion.li>
               ))}
             </ul>
@@ -126,13 +127,13 @@ const Footer = () => {
                   viewport={{ once: true }}
                   transition={{ delay: 0.4 + index * 0.05 }}
                 >
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.href}
                     className="text-muted-foreground hover:text-primary transition-colors text-sm flex items-center gap-2 group"
                   >
                     <ChevronRight className="w-3 h-3 text-primary group-hover:translate-x-1 transition-transform" />
                     {link.name}
-                  </a>
+                  </Link>
                 </motion.li>
               ))}
             </ul>
@@ -143,7 +144,7 @@ const Footer = () => {
       {/* Copyright */}
       <div className="container-custom py-6 border-t border-muted-foreground/10">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>© 2025 Copyrights by Liable. All Rights Reserved.</p>
+          <p>© 2026 Copyright by Liable. All Rights Reserved.</p>
           <p>Crafted by 4th&Co</p>
         </div>
       </div>

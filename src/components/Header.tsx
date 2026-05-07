@@ -1,6 +1,10 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, X, Search, ChevronDown, User } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, X, Search, ChevronDown, User, LogOut } from "lucide-react";
+
+import logo from "@/assets/logo.png";
+import { clearAuthUser, getAuthUser } from "@/lib/auth";
+import { apiPost } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,69 +12,118 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import logo from "@/assets/logo.png";
+
+
+type Role = "ADMIN" | "STAFF" | "LANDLORD" | "STUDENT" | "GUEST";
+
+
+function normalizeRole(role?: string): Role {
+  const r = String(role || "").toUpperCase();
+  if (r === "ADMIN" || r === "SUPERADMIN" || r === "SUPER_ADMIN") return "ADMIN";
+  if (r === "STAFF") return "STAFF";
+  if (r === "LANDLORD") return "LANDLORD";
+  if (r === "STUDENT") return "STUDENT";
+  return "GUEST";
+}
+
 
 const navLinks = [
-  { name: "Home", href: "/" },
+  { name: "Home", href: "/", isRoute: true },
   { name: "About Us", href: "/about", isRoute: true },
+  { name: "Innovation", href: "/innovation", isRoute: true },
   { name: "Properties", href: "/properties", isRoute: true },
   { name: "Services", href: "#services", hasDropdown: true },
   { name: "News", href: "/news", isRoute: true },
   { name: "Contact", href: "/contact", isRoute: true },
 ];
 
-const serviceOptions = [
+const allServiceOptions = [
   { name: "Students", href: "/services/students", isRoute: true },
   { name: "Landlords", href: "/services/landlords", isRoute: true },
 ];
 
+
 const Header = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [user, setUser] = useState(getAuthUser());
+
+  useEffect(() => {
+    const onStorage = () => setUser(getAuthUser());
+    window.addEventListener("storage", onStorage);
+    setUser(getAuthUser());
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  const role: Role = useMemo(() => normalizeRole(user?.role), [user]);
+
+  const serviceOptions = useMemo(() => {
+    if (!user) return allServiceOptions;
+    if (role === "STUDENT") return allServiceOptions.filter((x) => x.name === "Students");
+    if (role === "LANDLORD") return allServiceOptions.filter((x) => x.name === "Landlords");
+    return allServiceOptions;
+  }, [user, role]);
+
+  const logout = async () => {
+    try {
+      await apiPost("/api/accounts/auth/logout/", {});
+    } catch {
+      // Clear local state even if the session is already gone.
+    } finally {
+      clearAuthUser();
+      setUser(null);
+      navigate("/auth");
+    }
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="container-custom">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
+        <div className="flex items-center justify-between h-24">
           <Link to="/" className="flex items-center">
-            <img src={logo} alt="Liable Group Services" className="h-12 md:h-16 lg:h-20 w-auto" />
+            <img
+              src={logo}
+              alt="Liable"
+              className="h-16 md:h-20 lg:h-24 w-auto drop-shadow-lg"
+            />
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
+            {navLinks.map((link) =>
               link.hasDropdown ? (
-                <DropdownMenu key={link.name} open={isServicesOpen} onOpenChange={setIsServicesOpen}>
+                <DropdownMenu
+                  key={link.name}
+                  open={isServicesOpen}
+                  onOpenChange={setIsServicesOpen}
+                >
                   <DropdownMenuTrigger asChild>
                     <button className="text-sm font-medium text-foreground hover:text-primary transition-colors flex items-center gap-1 outline-none">
                       {link.name}
-                      <ChevronDown className={`w-4 h-4 transition-transform ${isServicesOpen ? 'rotate-180' : ''}`} />
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform ${
+                          isServicesOpen ? "rotate-180" : ""
+                        }`}
+                      />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="bg-background border border-border shadow-lg z-50">
+                  <DropdownMenuContent
+                    align="start"
+                    className="bg-background border border-border shadow-lg z-50"
+                  >
                     {serviceOptions.map((option) => (
                       <DropdownMenuItem key={option.name} asChild>
-                        {option.isRoute ? (
-                          <Link
-                            to={option.href}
-                            className="cursor-pointer text-sm font-medium text-foreground hover:text-primary hover:bg-accent px-4 py-2"
-                          >
-                            {option.name}
-                          </Link>
-                        ) : (
-                          <a
-                            href={option.href}
-                            className="cursor-pointer text-sm font-medium text-foreground hover:text-primary hover:bg-accent px-4 py-2"
-                          >
-                            {option.name}
-                          </a>
-                        )}
+                        <Link
+                          to={option.href}
+                          className="cursor-pointer text-sm font-medium text-foreground hover:text-primary hover:bg-accent px-4 py-2"
+                        >
+                          {option.name}
+                        </Link>
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-              ) : link.isRoute ? (
+              ) : (
                 <Link
                   key={link.name}
                   to={link.href}
@@ -78,32 +131,44 @@ const Header = () => {
                 >
                   {link.name}
                 </Link>
-              ) : (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-                >
-                  {link.name}
-                </a>
               )
-            ))}
+            )}
           </nav>
 
-          {/* Search & Login Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="rounded-full border border-border">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full border border-border"
+            >
               <Search className="w-5 h-5" />
             </Button>
-            <Link to="/auth">
-              <Button variant="default" size="sm" className="gap-2">
-                <User className="w-4 h-4" />
-                Login
-              </Button>
-            </Link>
+
+            {!user ? (
+              <Link to="/auth">
+                <Button variant="default" size="sm" className="gap-2">
+                  <User className="w-4 h-4" />
+                  Login
+                </Button>
+              </Link>
+            ) : (
+              <div className="flex items-center gap-2">
+                <div className="text-sm font-medium text-foreground">
+                  {user.full_name || user.email}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => void logout()}
+                  title="Logout"
+                >
+                  <LogOut className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
           </div>
 
-          {/* Mobile Menu Button */}
           <Button
             variant="ghost"
             size="icon"
@@ -114,39 +179,29 @@ const Header = () => {
           </Button>
         </div>
 
-        {/* Mobile Navigation */}
         {isMenuOpen && (
           <nav className="lg:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-2">
-              {navLinks.map((link) => (
+              {navLinks.map((link) =>
                 link.hasDropdown ? (
                   <div key={link.name} className="flex flex-col">
-                    <span className="text-sm font-medium text-foreground px-4 py-2">{link.name}</span>
+                    <span className="text-sm font-medium text-foreground px-4 py-2">
+                      {link.name}
+                    </span>
                     <div className="flex flex-col pl-6">
                       {serviceOptions.map((option) => (
-                        option.isRoute ? (
-                          <Link
-                            key={option.name}
-                            to={option.href}
-                            className="text-sm text-muted-foreground hover:text-primary transition-colors px-4 py-2"
-                            onClick={() => setIsMenuOpen(false)}
-                          >
-                            {option.name}
-                          </Link>
-                        ) : (
-                          <a
-                            key={option.name}
-                            href={option.href}
-                            className="text-sm text-muted-foreground hover:text-primary transition-colors px-4 py-2"
-                            onClick={() => setIsMenuOpen(false)}
-                          >
-                            {option.name}
-                          </a>
-                        )
+                        <Link
+                          key={option.name}
+                          to={option.href}
+                          className="text-sm text-muted-foreground hover:text-primary transition-colors px-4 py-2"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {option.name}
+                        </Link>
                       ))}
                     </div>
                   </div>
-                ) : link.isRoute ? (
+                ) : (
                   <Link
                     key={link.name}
                     to={link.href}
@@ -155,25 +210,31 @@ const Header = () => {
                   >
                     {link.name}
                   </Link>
-                ) : (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    className="text-sm font-medium text-foreground hover:text-primary transition-colors px-4 py-2"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {link.name}
-                  </a>
                 )
-              ))}
-              {/* Mobile Login Button */}
+              )}
+
               <div className="px-4 pt-4 border-t border-border mt-2">
-                <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="default" size="sm" className="w-full gap-2">
-                    <User className="w-4 h-4" />
-                    Login / Sign Up
+                {!user ? (
+                  <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="default" size="sm" className="w-full gap-2">
+                      <User className="w-4 h-4" />
+                      Login
+                    </Button>
+                  </Link>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-2"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      void logout();
+                    }}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Logout ({user.full_name || user.email})
                   </Button>
-                </Link>
+                )}
               </div>
             </div>
           </nav>
@@ -182,5 +243,6 @@ const Header = () => {
     </header>
   );
 };
+
 
 export default Header;

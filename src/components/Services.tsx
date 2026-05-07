@@ -1,35 +1,35 @@
 import { motion } from "framer-motion";
-import { Plane, Home, Coins, Briefcase } from "lucide-react";
+import { Activity, FileCheck, Home, ShieldCheck } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 
 const services = [
   {
     number: "01",
-    title: "Arrival & Orientation",
+    title: "Tenancy Readiness Assessment",
     description:
-      "Seamless airport pickup, welcome pack, and local SIM assistance. We guide you with travel support and help you settle in. Connect with fellow students through our community network.",
-    icon: Plane,
+      "ISRA helps Liable assess tenancy readiness using profile completeness, affordability, residency stability, and operational trust indicators.",
+    icon: ShieldCheck,
   },
   {
     number: "02",
-    title: "Accommodation Support",
+    title: "Controlled Allocation",
     description:
-      "Verified student housing with flexible lease options. Explore virtual tours, short stays, and long-term homes. We help match you with the right accommodation easily.",
+      "PropMatch allocates properties through budget, availability, occupancy rules, location suitability, and admin review. Landlords do not browse student profiles.",
     icon: Home,
   },
   {
     number: "03",
-    title: "Student Startup Kit – Free Access",
+    title: "Live Tenancy Monitoring",
     description:
-      "Complimentary registration and student starter guide. Access tools, offers, and resources made for students. Everything you need to begin your student life smoothly.",
-    icon: Coins,
+      "THS tracks tenancy health through rent behaviour, complaints, communication, and continuity so the platform can support stable occupancy.",
+    icon: Activity,
   },
   {
     number: "04",
-    title: "Job & Career Support",
+    title: "Verified Tenancy Reputation",
     description:
-      "Get a professional, ATS-optimized CV tailored for the UK market. We offer expert resume formatting, job search tips, and guidance. From part-time roles to full-time careers, we help you prepare confidently.",
-    icon: Briefcase,
+      "PTR creates a verified tenancy record after successful completion, helping international students build recognised UK tenancy history.",
+    icon: FileCheck,
   },
 ];
 
@@ -37,18 +37,15 @@ const Services = () => {
   return (
     <section id="services" className="section-padding bg-cream">
       <div className="container-custom">
-        {/* Header */}
         <AnimatedSection className="text-center mb-16">
           <span className="text-primary font-medium text-sm tracking-wider uppercase">
-            Our Services
+            Operational Infrastructure
           </span>
           <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mt-3">
-            Explore Our Services for{" "}
-            <span className="text-primary">Tenants</span>
+            A Managed System for <span className="text-primary">Student Housing</span>
           </h2>
         </AnimatedSection>
 
-        {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {services.map((service, index) => (
             <motion.div

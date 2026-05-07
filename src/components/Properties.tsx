@@ -2,65 +2,73 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AnimatedSection from "./AnimatedSection";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+
+import { fetchPublicProperties, Property } from "@/lib/properties";
+
+// fallback images
 import property1 from "@/assets/property-1.jpg";
 import property2 from "@/assets/property-2.jpg";
 import property3 from "@/assets/property-3.jpg";
 import property4 from "@/assets/property-4.jpg";
 import property5 from "@/assets/property-5.jpg";
-import { useRef, useState } from "react";
 
-const locations = [
-  {
-    name: "London",
-    properties: 12,
-    subtitle: "Luxury Properties With Conveniences.",
-    image: property1,
-  },
-  {
-    name: "Manchester",
-    properties: 8,
-    subtitle: "Modern Living Spaces.",
-    image: property2,
-  },
-  {
-    name: "Birmingham",
-    properties: 6,
-    subtitle: "Affordable Quality Homes.",
-    image: property3,
-  },
-  {
-    name: "Leeds",
-    properties: 5,
-    subtitle: "Student-Friendly Accommodations.",
-    image: property4,
-  },
-  {
-    name: "Liverpool",
-    properties: 4,
-    subtitle: "Vibrant City Living.",
-    image: property5,
-  },
-];
+const fallbackImages = [property1, property2, property3, property4, property5];
+
+type LocationCard = {
+  name: string; // city
+  properties: number;
+  subtitle: string;
+  image: string;
+
+  // ✅ optional: first property_type found in that city (so you can pass type filter too)
+  type?: string;
+};
+
+function getCoverImage(p: Property) {
+  const images = [...(p.images || [])].sort((a, b) => {
+    if (a.is_cover !== b.is_cover) return a.is_cover ? -1 : 1;
+    return (a.sort_order || 0) - (b.sort_order || 0);
+  });
+  return images[0]?.image_url || "";
+}
+
+function subtitleForCity(city: string) {
+  const c = city.toLowerCase();
+  if (c.includes("london")) return "Luxury Properties With Conveniences.";
+  if (c.includes("manchester")) return "Modern Living Spaces.";
+  if (c.includes("birmingham")) return "Affordable Quality Homes.";
+  if (c.includes("leeds")) return "Student-Friendly Accommodations.";
+  if (c.includes("liverpool")) return "Vibrant City Living.";
+  return "Find your perfect home.";
+}
 
 interface PropertyCardProps {
-  location: typeof locations[0];
+  location: LocationCard;
   index: number;
   isHovered: boolean;
   onHover: () => void;
   onLeave: () => void;
 }
 
-const PropertyCard = ({ location, index, isHovered, onHover, onLeave }: PropertyCardProps) => {
+const LocationCardUI = ({
+  location,
+  index,
+  isHovered,
+  onHover,
+  onLeave,
+}: PropertyCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  
+
   const springConfig = { damping: 25, stiffness: 300 };
   const rotateX = useSpring(useTransform(y, [-100, 100], [10, -10]), springConfig);
   const rotateY = useSpring(useTransform(x, [-100, 100], [-10, 10]), springConfig);
   const scale = useSpring(1, springConfig);
-  
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
@@ -69,12 +77,12 @@ const PropertyCard = ({ location, index, isHovered, onHover, onLeave }: Property
     x.set(e.clientX - centerX);
     y.set(e.clientY - centerY);
   };
-  
+
   const handleMouseEnter = () => {
     scale.set(1.02);
     onHover();
   };
-  
+
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
@@ -82,90 +90,167 @@ const PropertyCard = ({ location, index, isHovered, onHover, onLeave }: Property
     onLeave();
   };
 
+  // ✅ build URL for properties page filter
+  const toUrl = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set("city", location.name);
+
+    // ✅ optional: also filter by type if you want
+    // if (location.type) params.set("type", String(location.type).toUpperCase());
+
+    return `/properties?${params.toString()}`;
+  }, [location.name, location.type]);
+
   return (
-    <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{
-        duration: 0.5,
-        delay: index * 0.1,
-        ease: [0.21, 0.47, 0.32, 0.98],
-      }}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        rotateX,
-        rotateY,
-        scale,
-        transformStyle: "preserve-3d",
-        flex: isHovered ? 2 : 1,
-      }}
-      className="relative overflow-hidden cursor-pointer h-[200px] md:h-[450px] transition-[flex] duration-500 ease-out md:flex-1"
-    >
-      <motion.img
-        src={location.image}
-        alt={location.name}
-        className="w-full h-full object-cover absolute inset-0"
-        style={{
-          scale: isHovered ? 1.1 : 1,
-          transition: "scale 0.5s ease-out",
-        }}
-      />
-      <div className={`absolute inset-0 transition-opacity duration-300 ${
-        isHovered 
-          ? "bg-gradient-to-t from-foreground/90 via-foreground/40 to-transparent" 
-          : "bg-gradient-to-t from-foreground/70 to-transparent"
-      }`} />
-      
-      {/* Content */}
+    <Link to={toUrl} className="md:flex-1">
       <motion.div
-        className="absolute bottom-0 left-0 right-0 p-6 text-background"
-        style={{
-          transform: "translateZ(40px)",
+        ref={cardRef}
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{
+          duration: 0.5,
+          delay: index * 0.1,
+          ease: [0.21, 0.47, 0.32, 0.98],
         }}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          rotateX,
+          rotateY,
+          scale,
+          transformStyle: "preserve-3d",
+          flex: isHovered ? 2 : 1,
+        }}
+        className="relative overflow-hidden cursor-pointer h-[200px] md:h-[450px] transition-[flex] duration-500 ease-out"
+        role="link"
+        aria-label={`View properties in ${location.name}`}
+        title={`View properties in ${location.name}`}
       >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ 
-            opacity: isHovered ? 1 : 0.8, 
-            y: isHovered ? 0 : 10 
+        <motion.img
+          src={location.image}
+          alt={location.name}
+          className="w-full h-full object-cover absolute inset-0"
+          style={{
+            scale: isHovered ? 1.1 : 1,
+            transition: "scale 0.5s ease-out",
           }}
-          transition={{ duration: 0.3 }}
+        />
+
+        <div
+          className={`absolute inset-0 transition-opacity duration-300 ${
+            isHovered
+              ? "bg-gradient-to-t from-foreground/90 via-foreground/40 to-transparent"
+              : "bg-gradient-to-t from-foreground/70 to-transparent"
+          }`}
+        />
+
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 p-6 text-background"
+          style={{ transform: "translateZ(40px)" }}
         >
-          <span className="text-primary text-sm font-medium flex items-center gap-2 mb-2">
-            <span className="w-4 h-px bg-primary" />
-            {location.properties} Properties
-          </span>
-          <h3 className="font-serif text-2xl md:text-3xl font-bold mb-2">{location.name}</h3>
-          <motion.p 
-            className="text-sm text-background/80 overflow-hidden"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ 
-              height: isHovered ? "auto" : 0, 
-              opacity: isHovered ? 1 : 0 
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{
+              opacity: isHovered ? 1 : 0.8,
+              y: isHovered ? 0 : 10,
             }}
             transition={{ duration: 0.3 }}
           >
-            {location.subtitle}
-          </motion.p>
+            <span className="text-primary text-sm font-medium flex items-center gap-2 mb-2">
+              <span className="w-4 h-px bg-primary" />
+              {location.properties} Properties
+            </span>
+
+            <h3 className="font-serif text-2xl md:text-3xl font-bold mb-2">
+              {location.name}
+            </h3>
+
+            <motion.p
+              className="text-sm text-background/80 overflow-hidden"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{
+                height: isHovered ? "auto" : 0,
+                opacity: isHovered ? 1 : 0,
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              {location.subtitle}
+            </motion.p>
+          </motion.div>
         </motion.div>
       </motion.div>
-    </motion.div>
+    </Link>
   );
 };
 
-const Properties = () => {
+export default function Properties() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [items, setItems] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // ✅ fetch from backend
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await fetchPublicProperties();
+        if (!alive) return;
+        setItems(Array.isArray(data) ? data : []);
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // ✅ build "top locations" from backend
+  const locations: LocationCard[] = useMemo(() => {
+    if (!items.length) {
+      return [
+        { name: "London", properties: 0, subtitle: subtitleForCity("London"), image: fallbackImages[0] },
+        { name: "Manchester", properties: 0, subtitle: subtitleForCity("Manchester"), image: fallbackImages[1] },
+        { name: "Birmingham", properties: 0, subtitle: subtitleForCity("Birmingham"), image: fallbackImages[2] },
+        { name: "Leeds", properties: 0, subtitle: subtitleForCity("Leeds"), image: fallbackImages[3] },
+        { name: "Liverpool", properties: 0, subtitle: subtitleForCity("Liverpool"), image: fallbackImages[4] },
+      ];
+    }
+
+    // count + cover + type by city
+    const map = new Map<string, { count: number; cover?: string; type?: string }>();
+
+    for (const p of items) {
+      const city = (p.city || "").trim() || "Unknown";
+      const prev = map.get(city) || { count: 0, cover: "", type: "" };
+
+      // first cover/type per city
+      const cover = prev.cover || getCoverImage(p);
+      const type = prev.type || (p.property_type ? String(p.property_type).toUpperCase() : "");
+
+      map.set(city, { count: prev.count + 1, cover, type });
+    }
+
+    return [...map.entries()]
+      .map(([city, v], idx) => ({
+        name: city,
+        properties: v.count,
+        subtitle: subtitleForCity(city),
+        image: v.cover || fallbackImages[idx % fallbackImages.length],
+        type: v.type || undefined,
+      }))
+      .sort((a, b) => b.properties - a.properties)
+      .slice(0, 5);
+  }, [items]);
 
   return (
     <section id="properties" className="section-padding bg-background">
       <div className="container-custom px-4 md:px-8">
         {/* Banner */}
         <AnimatedSection className="bg-cream rounded-2xl md:rounded-3xl p-6 md:p-12 mb-8 md:mb-16 relative overflow-hidden">
-          {/* Decorative lines */}
           <div className="absolute inset-0 opacity-10">
             <svg className="w-full h-full" viewBox="0 0 1200 400">
               {[...Array(20)].map((_, i) => (
@@ -183,16 +268,24 @@ const Properties = () => {
           </div>
 
           <div className="relative z-10 max-w-2xl">
-            <span className="text-primary font-medium text-xs md:text-sm tracking-wider">Properties</span>
+            <span className="text-primary font-medium text-xs md:text-sm tracking-wider">
+              Properties
+            </span>
             <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl font-bold text-foreground mt-2 md:mt-3 mb-4 md:mb-6">
-              Welcome to Our <span className="text-primary">Inclusive Residences</span>—Where Quality Living Meets Affordability
+              Welcome to Our <span className="text-primary">Inclusive Residences</span>—Where Quality Living Meets
+              Affordability
             </h2>
+
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-              <Button variant="outline" className="gap-2 text-sm">
-                <Home className="w-4 h-4" />
-                View Properties
-              </Button>
+              <Link to="/properties">
+                <Button variant="outline" className="gap-2 text-sm">
+                  <Home className="w-4 h-4" />
+                  View Properties
+                </Button>
+              </Link>
             </motion.div>
+
+            {loading && <p className="mt-4 text-sm text-muted-foreground">Loading from server…</p>}
           </div>
         </AnimatedSection>
 
@@ -207,13 +300,12 @@ const Properties = () => {
             </h2>
           </div>
 
-          {/* Locations Grid - Stacked on mobile, flex on desktop */}
-          <div 
+          <div
             className="flex flex-col md:flex-row gap-2 md:gap-1 overflow-hidden rounded-xl"
             style={{ perspective: "1000px" }}
           >
             {locations.map((location, index) => (
-              <PropertyCard
+              <LocationCardUI
                 key={location.name}
                 location={location}
                 index={index}
@@ -227,6 +319,4 @@ const Properties = () => {
       </div>
     </section>
   );
-};
-
-export default Properties;
+}
