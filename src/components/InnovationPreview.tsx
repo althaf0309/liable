@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Activity, ArrowRight, Building2, EyeOff, FileCheck, Gauge, ShieldCheck } from "lucide-react";
+import { Activity, ArrowRight, Building2, EyeOff, FileCheck, Gauge, ShieldCheck, WalletCards } from "lucide-react";
 import AnimatedSection from "./AnimatedSection";
 import { Button } from "@/components/ui/button";
 
@@ -24,19 +24,25 @@ const items = [
   },
   {
     title: "PTR",
-    subtitle: "Portable reputation",
-    body: "Successful tenancy completion creates a verified record students can carry into future applications.",
+    subtitle: "Property trust record",
+    body: "Property reliability is structured through maintenance history, safety documents, responsiveness, rent handling, and feedback signals.",
     icon: FileCheck,
   },
   {
     title: "PYO",
-    subtitle: "Occupancy continuity",
+    subtitle: "Portfolio planning",
     body: "Void-risk alerts help Liable act before properties become empty.",
     icon: Gauge,
   },
   {
-    title: "Controlled Visibility",
-    subtitle: "Privacy by role",
+    title: "Escrow",
+    subtitle: "Controlled payment flow",
+    body: "Roadmap payment controls improve rent and deposit traceability without distracting from the Year 1 proof.",
+    icon: WalletCards,
+  },
+  {
+    title: "CVS",
+    subtitle: "Controlled visibility",
     body: "Students, landlords, and admins see different levels of data to reduce bias and protect privacy.",
     icon: EyeOff,
   },

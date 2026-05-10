@@ -18,7 +18,10 @@ function normalizeRole(role?: string) {
 }
 
 const DASHBOARD_BASE_URL = (
-  import.meta.env.VITE_DASHBOARD_BASE_URL || window.location.origin
+  import.meta.env.VITE_DASHBOARD_BASE_URL ||
+  (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? window.location.origin
+    : "https://app.lgsltd.uk")
 ).replace(/\/+$/, "");
 
 export default function AuthPage() {

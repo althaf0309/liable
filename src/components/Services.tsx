@@ -21,14 +21,14 @@ const services = [
     number: "03",
     title: "Live Tenancy Monitoring",
     description:
-      "THS tracks tenancy health through rent behaviour, complaints, communication, and continuity so the platform can support stable occupancy.",
+      "THS is an internal tenancy operational health indicator. It tracks rent behaviour, complaints, communication, property care, and continuity so Liable can support stable occupancy.",
     icon: Activity,
   },
   {
     number: "04",
-    title: "Verified Tenancy Reputation",
+    title: "Property Trust Record",
     description:
-      "PTR creates a verified tenancy record after successful completion, helping international students build recognised UK tenancy history.",
+      "PTR structures property reliability through landlord responsiveness, maintenance history, safety documentation, rent and deposit handling, and tenant feedback signals.",
     icon: FileCheck,
   },
 ];
