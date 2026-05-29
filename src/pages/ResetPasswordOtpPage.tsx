@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-
-const API_BASE = import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000";
+import { apiPost } from "@/lib/api";
 
 export default function ResetPasswordOtpPage() {
   const { toast } = useToast();
@@ -17,14 +16,11 @@ export default function ResetPasswordOtpPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/auth/password/otp/verify/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp, new_password: newPassword }),
+      await apiPost("/api/accounts/auth/password/otp/verify/", {
+        email,
+        otp,
+        new_password: newPassword,
       });
-
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.detail || data.message || "OTP verification failed");
 
       toast({ title: "Password Updated", description: "Now you can login with new password." });
       window.location.href = "/auth";

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-
-const API_BASE = import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000";
+import { apiPost } from "@/lib/api";
 
 export default function ForgotPasswordOtpPage() {
   const { toast } = useToast();
@@ -12,14 +11,7 @@ export default function ForgotPasswordOtpPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/auth/password/otp/request/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.detail || data.message || "Failed to send OTP");
+      await apiPost("/api/accounts/auth/password/otp/request/", { email });
 
       toast({ title: "OTP Sent", description: "Check your email for OTP." });
 

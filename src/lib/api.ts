@@ -1,7 +1,11 @@
 // src/lib/api.ts
 
-export const API_BASE = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8000")
-  .replace(/\/+$/, "");
+const defaultApiBase =
+  window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:8000"
+    : "https://api.lgsltd.uk";
+
+export const API_BASE = (import.meta.env.VITE_API_BASE_URL || defaultApiBase).replace(/\/+$/, "");
 
 async function parseJsonSafe(res: Response) {
   const text = await res.text();
@@ -19,6 +23,7 @@ function getCookie(name: string) {
 }
 
 let csrfPromise: Promise<void> | null = null;
+let csrfToken: string | null = null;
 
 async function ensureCsrfCookie() {
   if (getCookie("csrftoken")) return;
@@ -26,7 +31,14 @@ async function ensureCsrfCookie() {
     csrfPromise = fetch(`${API_BASE}/api/accounts/auth/csrf/`, {
       method: "GET",
       credentials: "include",
-    }).then(() => undefined).finally(() => {
+    }).then(async (response) => {
+      try {
+        const data = await response.json();
+        csrfToken = data?.csrfToken || csrfToken;
+      } catch {
+        // Cookie-only CSRF endpoints are still valid.
+      }
+    }).finally(() => {
       csrfPromise = null;
     });
   }
@@ -49,7 +61,7 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
     await ensureCsrfCookie();
   }
 
-  const csrf = getCookie("csrftoken");
+  const csrf = getCookie("csrftoken") || csrfToken;
   if (csrf && method !== "GET") {
     headers["X-CSRFToken"] = csrf;
   }
