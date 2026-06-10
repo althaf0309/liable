@@ -51,14 +51,14 @@ const About = () => {
                 {/* Navigation arrows */}
                 <button
                   onClick={prevSlide}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background transition-colors shadow-lg"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
                   aria-label="Previous image"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
                 <button
                   onClick={nextSlide}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background transition-colors shadow-lg"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
                   aria-label="Next image"
                 >
                   <ChevronRight className="w-5 h-5" />
@@ -71,9 +71,9 @@ const About = () => {
                       key={index}
                       onClick={() => setCurrentIndex(index)}
                       className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                        index === currentIndex 
-                          ? "bg-primary w-6" 
-                          : "bg-background/60 hover:bg-background"
+                        index === currentIndex
+                          ? "bg-primary w-6"
+                          : "bg-white/30 hover:bg-white/65"
                       }`}
                       aria-label={`Go to slide ${index + 1}`}
                     />

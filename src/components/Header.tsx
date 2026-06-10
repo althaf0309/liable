@@ -78,7 +78,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[hsl(222,48%,5%)]/90 backdrop-blur-md border-b border-[hsl(220,30%,14%)]">
       <div className="container-custom">
         <div className="flex items-center justify-between h-24">
           <Link to="/" className="flex items-center">
@@ -109,13 +109,13 @@ const Header = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="start"
-                    className="bg-background border border-border shadow-lg z-50"
+                    className="bg-[hsl(220,44%,8%)] border border-[hsl(220,30%,14%)] shadow-2xl z-50"
                   >
                     {serviceOptions.map((option) => (
                       <DropdownMenuItem key={option.name} asChild>
                         <Link
                           to={option.href}
-                          className="cursor-pointer text-sm font-medium text-foreground hover:text-primary hover:bg-accent px-4 py-2"
+                          className="cursor-pointer text-sm font-medium text-foreground hover:text-primary hover:bg-[hsl(220,40%,12%)] px-4 py-2"
                         >
                           {option.name}
                         </Link>
@@ -180,7 +180,7 @@ const Header = () => {
         </div>
 
         {isMenuOpen && (
-          <nav className="lg:hidden py-4 border-t border-border">
+          <nav className="lg:hidden py-4 border-t border-[hsl(220,30%,14%)]">
             <div className="flex flex-col gap-2">
               {navLinks.map((link) =>
                 link.hasDropdown ? (
@@ -213,7 +213,7 @@ const Header = () => {
                 )
               )}
 
-              <div className="px-4 pt-4 border-t border-border mt-2">
+              <div className="px-4 pt-4 border-t border-[hsl(220,30%,14%)] mt-2">
                 {!user ? (
                   <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="default" size="sm" className="w-full gap-2">

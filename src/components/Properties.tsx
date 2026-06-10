@@ -141,13 +141,13 @@ const LocationCardUI = ({
         <div
           className={`absolute inset-0 transition-opacity duration-300 ${
             isHovered
-              ? "bg-gradient-to-t from-foreground/90 via-foreground/40 to-transparent"
-              : "bg-gradient-to-t from-foreground/70 to-transparent"
+              ? "bg-gradient-to-t from-black/85 via-black/45 to-transparent"
+              : "bg-gradient-to-t from-black/70 to-transparent"
           }`}
         />
 
         <motion.div
-          className="absolute bottom-0 left-0 right-0 p-6 text-background"
+          className="absolute bottom-0 left-0 right-0 p-6 text-white"
           style={{ transform: "translateZ(40px)" }}
         >
           <motion.div
@@ -168,7 +168,7 @@ const LocationCardUI = ({
             </h3>
 
             <motion.p
-              className="text-sm text-background/80 overflow-hidden"
+              className="text-sm text-white/75 overflow-hidden"
               initial={{ height: 0, opacity: 0 }}
               animate={{
                 height: isHovered ? "auto" : 0,
@@ -250,7 +250,7 @@ export default function Properties() {
     <section id="properties" className="section-padding bg-background">
       <div className="container-custom px-4 md:px-8">
         {/* Banner */}
-        <AnimatedSection className="bg-cream rounded-2xl md:rounded-3xl p-6 md:p-12 mb-8 md:mb-16 relative overflow-hidden">
+        <AnimatedSection className="bg-cream border border-border rounded-2xl md:rounded-3xl p-6 md:p-12 mb-8 md:mb-16 relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <svg className="w-full h-full" viewBox="0 0 1200 400">
               {[...Array(20)].map((_, i) => (
@@ -290,7 +290,7 @@ export default function Properties() {
         </AnimatedSection>
 
         {/* Top Locations */}
-        <AnimatedSection delay={0.2} className="bg-cream rounded-2xl md:rounded-3xl py-8 md:py-16 px-4 md:px-8">
+        <AnimatedSection delay={0.2} className="bg-cream border border-border rounded-2xl md:rounded-3xl py-8 md:py-16 px-4 md:px-8">
           <div className="text-center mb-8 md:mb-12">
             <span className="text-primary font-medium text-xs md:text-sm tracking-wider uppercase">
               Our Property List

@@ -24,7 +24,7 @@ const Footer = () => {
       {/* Contact Bar */}
       <div className="container-custom py-8">
         <AnimatedSection>
-          <div className="bg-primary rounded-xl p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-[hsl(42,80%,50%)]/10 border border-[hsl(42,80%,50%)]/20 rounded-xl p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
                 icon: MapPin,
@@ -42,12 +42,12 @@ const Footer = () => {
                 transition={{ delay: index * 0.1 }}
                 className="flex items-center gap-4"
               >
-                <div className="w-12 h-12 rounded-full bg-primary-foreground/20 flex items-center justify-center">
-                  <item.icon className="w-5 h-5 text-primary-foreground" />
+                <div className="w-12 h-12 rounded-full bg-[hsl(42,80%,50%)]/10 border border-[hsl(42,80%,50%)]/20 flex items-center justify-center">
+                  <item.icon className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <span className="text-xs text-primary-foreground/80">{item.label}</span>
-                  <p className="text-primary-foreground font-medium">{item.value}</p>
+                  <span className="text-xs text-muted-foreground">{item.label}</span>
+                  <p className="text-foreground font-medium">{item.value}</p>
                 </div>
               </motion.div>
             ))}
@@ -56,17 +56,17 @@ const Footer = () => {
       </div>
 
       {/* Main Footer */}
-      <div className="container-custom py-12 border-t border-muted-foreground/10">
+      <div className="container-custom py-12 border-t border-[hsl(220,30%,10%)]">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand */}
           <AnimatedSection delay={0.1} className="md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-                <Home className="w-5 h-5 text-primary-foreground" />
+              <div className="w-10 h-10 rounded-lg bg-[hsl(42,80%,50%)]/10 border border-[hsl(42,80%,50%)]/25 flex items-center justify-center">
+                <Home className="w-5 h-5 text-primary" />
               </div>
               <div className="flex flex-col">
-                <span className="font-serif font-bold text-xl text-background">Liable</span>
-                <span className="text-xs text-muted-foreground -mt-1">Group Services LTD</span>
+                <span className="font-display font-bold text-xl text-foreground tracking-tight">Liable</span>
+                <span className="text-[9px] text-primary font-semibold tracking-[0.15em] uppercase -mt-0.5">Quantum Platform</span>
               </div>
             </Link>
             <p className="text-muted-foreground text-sm mb-6">
@@ -89,7 +89,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <AnimatedSection delay={0.2}>
-            <h4 className="font-serif font-bold text-background mb-4 pb-2 border-b border-muted-foreground/20">
+            <h4 className="font-serif font-bold text-foreground mb-4 pb-2 border-b border-[hsl(220,30%,14%)]">
               Quick Link
             </h4>
             <ul className="space-y-2">
@@ -115,7 +115,7 @@ const Footer = () => {
 
           {/* Other */}
           <AnimatedSection delay={0.3}>
-            <h4 className="font-serif font-bold text-background mb-4 pb-2 border-b border-muted-foreground/20">
+            <h4 className="font-serif font-bold text-foreground mb-4 pb-2 border-b border-[hsl(220,30%,14%)]">
               Other
             </h4>
             <ul className="space-y-2">
@@ -142,10 +142,10 @@ const Footer = () => {
       </div>
 
       {/* Copyright */}
-      <div className="container-custom py-6 border-t border-muted-foreground/10">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>© 2026 Copyright by Liable. All Rights Reserved.</p>
-          <p>Crafted by 4th&Co</p>
+      <div className="container-custom py-6 border-t border-[hsl(220,30%,10%)]">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
+          <p>© 2026 Liable Group Services Ltd · All Rights Reserved.</p>
+          <p className="tracking-widest uppercase text-[10px]">Established · Intelligent · Controlled</p>
         </div>
       </div>
     </footer>

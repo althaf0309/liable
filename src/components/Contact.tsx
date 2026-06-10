@@ -66,7 +66,7 @@ const Contact = () => {
             <span className="text-primary font-medium text-sm tracking-wider uppercase">
               Book Appointment
             </span>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-background mt-3 mb-8">
+            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mt-3 mb-8">
               Send Message Anytime
             </h2>
 
@@ -79,19 +79,19 @@ const Contact = () => {
                   placeholder="Full Name*"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="bg-transparent border-muted-foreground/30 text-background placeholder:text-muted-foreground"
+                  className="bg-transparent border-muted-foreground/30 text-foreground placeholder:text-muted-foreground"
                 />
                 <Input
                   type="email"
                   placeholder="Email Address*"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="bg-transparent border-muted-foreground/30 text-background placeholder:text-muted-foreground"
+                  className="bg-transparent border-muted-foreground/30 text-foreground placeholder:text-muted-foreground"
                 />
               </div>
 
               <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
-                <SelectTrigger className="bg-transparent border-muted-foreground/30 text-background">
+                <SelectTrigger className="bg-transparent border-muted-foreground/30 text-foreground">
                   <SelectValue placeholder="Select Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -107,7 +107,7 @@ const Contact = () => {
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 rows={5}
-                className="bg-transparent border-muted-foreground/30 text-background placeholder:text-muted-foreground resize-none"
+                className="bg-transparent border-muted-foreground/30 text-foreground placeholder:text-muted-foreground resize-none"
               />
 
               <Button type="submit" className="rounded-full px-8" disabled={sending}>

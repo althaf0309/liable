@@ -136,13 +136,15 @@ const Hero = () => {
             className="w-full h-[120%] object-cover absolute inset-0"
           />
         </AnimatePresence>
-        <div className="absolute inset-0 bg-gradient-to-r from-foreground/70 via-foreground/50 to-foreground/30 md:from-foreground/60 md:via-foreground/30 md:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/25 md:from-black/80 md:via-black/45 md:to-black/10" />
+        {/* Gold ambient — bottom glow */}
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[hsl(42,80%,50%)]/[0.06] to-transparent pointer-events-none" />
       </motion.div>
 
       {/* Nav arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-background/20 backdrop-blur-sm hidden sm:flex items-center justify-center text-background hover:bg-background/40 transition-colors"
+        className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 backdrop-blur-sm hidden sm:flex items-center justify-center text-white hover:bg-white/20 transition-colors border border-white/10"
         aria-label="Previous slide"
       >
         <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
@@ -150,7 +152,7 @@ const Hero = () => {
 
       <button
         onClick={nextSlide}
-        className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-background/20 backdrop-blur-sm hidden sm:flex items-center justify-center text-background hover:bg-background/40 transition-colors"
+        className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 backdrop-blur-sm hidden sm:flex items-center justify-center text-white hover:bg-white/20 transition-colors border border-white/10"
         aria-label="Next slide"
       >
         <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
@@ -163,7 +165,7 @@ const Hero = () => {
             key={index}
             onClick={() => setCurrentSlide(index)}
             className={`w-2 h-2 md:w-2.5 md:h-2.5 rounded-full transition-all duration-300 ${
-              index === currentSlide ? "bg-primary w-6 md:w-8" : "bg-background/50 hover:bg-background/80"
+              index === currentSlide ? "bg-primary w-6 md:w-8" : "bg-white/35 hover:bg-white/65"
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
@@ -181,10 +183,10 @@ const Hero = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
             >
-              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-background italic leading-tight mb-3 md:mb-4">
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white italic leading-tight mb-3 md:mb-4">
                 {slides[currentSlide].title}
               </h1>
-              <p className="text-background/90 text-base md:text-lg lg:text-xl mb-6 md:mb-8">
+              <p className="text-white/80 text-base md:text-lg lg:text-xl mb-6 md:mb-8">
                 {slides[currentSlide].subtitle}
               </p>
             </motion.div>
@@ -195,32 +197,32 @@ const Hero = () => {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
-            className="bg-background rounded-lg shadow-2xl overflow-hidden"
+            className="bg-[hsl(220,44%,8%)]/90 backdrop-blur-md border border-[hsl(220,30%,14%)] rounded-lg shadow-2xl overflow-hidden"
           >
             <div className="flex flex-col md:flex-row">
               {/* Keyword */}
-              <div className="flex-1 p-4 md:p-5 border-b md:border-b-0 md:border-r border-border">
-                <label className="text-[10px] md:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5 md:mb-2">
+              <div className="flex-1 p-4 md:p-5 border-b md:border-b-0 md:border-r border-[hsl(220,30%,14%)]">
+                <label className="text-[10px] md:text-[11px] font-semibold text-[hsl(220,15%,52%)] uppercase tracking-wider block mb-1.5 md:mb-2">
                   Keyword
                 </label>
                 <Input
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                   placeholder="Looking For?"
-                  className="border-0 bg-transparent p-0 h-7 md:h-8 text-foreground text-sm font-medium focus-visible:ring-0 placeholder:text-muted-foreground/70"
+                  className="border-0 bg-transparent p-0 h-7 md:h-8 text-foreground text-sm font-medium focus-visible:ring-0 placeholder:text-[hsl(220,15%,40%)]"
                 />
               </div>
 
               {/* Category (Property Type) */}
-              <div className="flex-1 p-4 md:p-5 border-b md:border-b-0 md:border-r border-border">
-                <label className="text-[10px] md:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5 md:mb-2">
+              <div className="flex-1 p-4 md:p-5 border-b md:border-b-0 md:border-r border-[hsl(220,30%,14%)]">
+                <label className="text-[10px] md:text-[11px] font-semibold text-[hsl(220,15%,52%)] uppercase tracking-wider block mb-1.5 md:mb-2">
                   Type
                 </label>
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="border-0 bg-transparent p-0 h-7 md:h-8 text-foreground text-sm font-medium focus:ring-0 [&>svg]:text-muted-foreground">
+                  <SelectTrigger className="border-0 bg-transparent p-0 h-7 md:h-8 text-foreground text-sm font-medium focus:ring-0 [&>svg]:text-[hsl(220,15%,52%)]">
                     <SelectValue placeholder="Select Type" />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border-border z-50">
+                  <SelectContent className="bg-[hsl(220,44%,8%)] border-[hsl(220,30%,14%)] z-50">
                     {categories.map((cat) => (
                       <SelectItem key={cat.value} value={cat.value}>
                         {cat.label}
@@ -231,15 +233,15 @@ const Hero = () => {
               </div>
 
               {/* Location (City) */}
-              <div className="flex-1 p-4 md:p-5 border-b md:border-b-0 md:border-r border-border">
-                <label className="text-[10px] md:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5 md:mb-2">
+              <div className="flex-1 p-4 md:p-5 border-b md:border-b-0 md:border-r border-[hsl(220,30%,14%)]">
+                <label className="text-[10px] md:text-[11px] font-semibold text-[hsl(220,15%,52%)] uppercase tracking-wider block mb-1.5 md:mb-2">
                   City
                 </label>
                 <Select value={location} onValueChange={setLocation}>
-                  <SelectTrigger className="border-0 bg-transparent p-0 h-7 md:h-8 text-foreground text-sm font-medium focus:ring-0 [&>svg]:text-muted-foreground">
+                  <SelectTrigger className="border-0 bg-transparent p-0 h-7 md:h-8 text-foreground text-sm font-medium focus:ring-0 [&>svg]:text-[hsl(220,15%,52%)]">
                     <SelectValue placeholder="Select City" />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border-border z-50">
+                  <SelectContent className="bg-[hsl(220,44%,8%)] border-[hsl(220,30%,14%)] z-50">
                     {locations.map((loc) => (
                       <SelectItem key={loc.value} value={loc.value}>
                         {loc.label}
@@ -250,15 +252,15 @@ const Hero = () => {
               </div>
 
               {/* Price */}
-              <div className="flex-1 p-4 md:p-5 border-b md:border-b-0 md:border-r border-border">
-                <label className="text-[10px] md:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5 md:mb-2">
+              <div className="flex-1 p-4 md:p-5 border-b md:border-b-0 md:border-r border-[hsl(220,30%,14%)]">
+                <label className="text-[10px] md:text-[11px] font-semibold text-[hsl(220,15%,52%)] uppercase tracking-wider block mb-1.5 md:mb-2">
                   Price
                 </label>
                 <Select value={priceRange} onValueChange={setPriceRange}>
-                  <SelectTrigger className="border-0 bg-transparent p-0 h-7 md:h-8 text-foreground text-sm font-medium focus:ring-0 [&>svg]:text-muted-foreground">
+                  <SelectTrigger className="border-0 bg-transparent p-0 h-7 md:h-8 text-foreground text-sm font-medium focus:ring-0 [&>svg]:text-[hsl(220,15%,52%)]">
                     <SelectValue placeholder="Select Price" />
                   </SelectTrigger>
-                  <SelectContent className="bg-background border-border z-50">
+                  <SelectContent className="bg-[hsl(220,44%,8%)] border-[hsl(220,30%,14%)] z-50">
                     {priceRanges.map((p) => (
                       <SelectItem key={p.value} value={p.value}>
                         {p.label}
@@ -273,7 +275,7 @@ const Hero = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="gap-1.5 md:gap-2 h-8 md:h-9 px-3 md:px-4 text-xs font-medium"
+                  className="gap-1.5 md:gap-2 h-8 md:h-9 px-3 md:px-4 text-xs font-medium border-[hsl(220,30%,22%)] text-foreground hover:bg-[hsl(220,40%,12%)] hover:border-[hsl(42,80%,50%)]/30"
                   onClick={() => {
                     // optional: open advanced filter modal later
                   }}

@@ -1,96 +1,58 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222 47% 15%;
+    /* London Noir / Quantum Dark — Big Ben Night Sky */
+    --background: 222 48% 5%;
+    --foreground: 210 20% 92%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 15%;
+    --card: 220 44% 8%;
+    --card-foreground: 210 20% 92%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 15%;
+    --popover: 220 44% 8%;
+    --popover-foreground: 210 20% 92%;
 
-    --primary: 43 70% 52%;
-    --primary-foreground: 0 0% 100%;
+    /* Quantum Gold — Big Ben amber */
+    --primary: 42 80% 50%;
+    --primary-foreground: 222 48% 5%;
 
-    --secondary: 30 100% 97%;
-    --secondary-foreground: 222 47% 15%;
+    --secondary: 220 40% 12%;
+    --secondary-foreground: 210 20% 85%;
 
-    --muted: 30 50% 96%;
-    --muted-foreground: 220 10% 50%;
+    --muted: 220 35% 11%;
+    --muted-foreground: 220 15% 52%;
 
-    --accent: 43 70% 52%;
-    --accent-foreground: 0 0% 100%;
+    /* Hover surface (used by Radix components for hover state) */
+    --accent: 220 40% 12%;
+    --accent-foreground: 210 20% 92%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 68% 52%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 90%;
-    --input: 220 20% 90%;
-    --ring: 43 70% 52%;
+    --border: 220 30% 14%;
+    --input: 220 30% 14%;
+    --ring: 42 80% 50%;
 
     --radius: 0.75rem;
 
-    /* Custom colors */
-    --gold: 43 70% 52%;
-    --gold-light: 43 70% 92%;
-    --navy: 222 47% 15%;
-    --cream: 30 100% 97%;
-    --dark: 220 20% 10%;
+    /* Color aliases */
+    --gold: 42 80% 50%;
+    --gold-light: 42 40% 15%;
+    --navy: 222 48% 5%;
+    --cream: 220 44% 8%;
+    --dark: 222 48% 5%;
 
     /* Sidebar */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 43 70% 52%;
-  }
-
-  .dark {
-    --background: 220 20% 10%;
-    --foreground: 0 0% 98%;
-
-    --card: 220 20% 12%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 220 20% 12%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 43 70% 52%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 220 20% 15%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 220 20% 15%;
-    --muted-foreground: 220 10% 60%;
-
-    --accent: 43 70% 52%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 220 20% 20%;
-    --input: 220 20% 20%;
-    --ring: 43 70% 52%;
-
-    --sidebar-background: 220 20% 10%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 43 70% 52%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 20% 15%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 220 20% 20%;
-    --sidebar-ring: 43 70% 52%;
+    --sidebar-background: 222 60% 4%;
+    --sidebar-foreground: 210 15% 65%;
+    --sidebar-primary: 42 80% 50%;
+    --sidebar-primary-foreground: 222 48% 5%;
+    --sidebar-accent: 220 44% 8%;
+    --sidebar-accent-foreground: 210 20% 92%;
+    --sidebar-border: 220 30% 10%;
+    --sidebar-ring: 42 80% 50%;
   }
 }
 
@@ -135,5 +97,71 @@
 
   .bg-dark {
     background-color: hsl(var(--dark));
+  }
+
+  /* Quantum glass surface */
+  .glass-surface {
+    background: hsl(var(--card) / 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border));
+  }
+
+  /* Quantum Gold glow */
+  .glow-gold {
+    box-shadow: 0 0 24px hsl(42 80% 50% / 0.15), 0 0 8px hsl(42 80% 50% / 0.08);
+  }
+
+  /* Electric Blue glow */
+  .glow-blue {
+    box-shadow: 0 0 24px hsl(210 74% 52% / 0.15), 0 0 8px hsl(210 74% 52% / 0.08);
+  }
+
+  /* Quantum divider line */
+  .quantum-divider {
+    border-color: hsl(var(--primary) / 0.15);
+  }
+
+  /* Dark scrollbar */
+  .scrollbar-dark {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  .scrollbar-dark::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .scrollbar-dark::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-dark::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  /* London city bottom gradient */
+  .london-gradient-bottom {
+    background: linear-gradient(
+      to top,
+      hsl(222 48% 5%) 0%,
+      hsl(222 48% 5% / 0.6) 40%,
+      transparent 100%
+    );
+  }
+
+  /* Gold gradient text */
+  .text-gold-gradient {
+    background-image: linear-gradient(
+      135deg,
+      hsl(42 80% 62%) 0%,
+      hsl(38 85% 74%) 50%,
+      hsl(42 80% 54%) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
 }

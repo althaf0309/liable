@@ -35,7 +35,7 @@ const services = [
 
 const Services = () => {
   return (
-    <section id="services" className="section-padding bg-cream">
+    <section id="services" className="section-padding bg-background">
       <div className="container-custom">
         <AnimatedSection className="text-center mb-16">
           <span className="text-primary font-medium text-sm tracking-wider uppercase">
@@ -59,17 +59,17 @@ const Services = () => {
                 ease: [0.21, 0.47, 0.32, 0.98],
               }}
               whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              className="bg-background rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow duration-300"
+              className="bg-card border border-border rounded-2xl p-8 transition-all duration-300 hover:border-[hsl(42,80%,50%)]/30 hover:shadow-[0_0_24px_hsl(42_80%_50%/0.08)]"
             >
               <div className="flex items-start justify-between mb-6">
-                <span className="text-4xl font-light text-muted-foreground/30 font-serif">
+                <span className="text-4xl font-light text-[hsl(42,80%,50%)]/20 font-serif">
                   {service.number}
                 </span>
                 <motion.div
                   whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="w-14 h-14 rounded-full bg-primary flex items-center justify-center"
+                  className="w-14 h-14 rounded-full bg-[hsl(42,80%,50%)]/10 border border-[hsl(42,80%,50%)]/25 flex items-center justify-center"
                 >
-                  <service.icon className="w-6 h-6 text-primary-foreground" />
+                  <service.icon className="w-6 h-6 text-primary" />
                 </motion.div>
               </div>
               <h3 className="font-serif text-xl font-bold text-foreground mb-3">
