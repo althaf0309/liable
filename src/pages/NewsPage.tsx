@@ -7,7 +7,7 @@ import { Calendar, User, ArrowRight, Clock } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
-import aboutImage from "@/assets/about-image.jpg";
+const aboutImage = "https://images.unsplash.com/photo-1532444143931-9f60a76242e7?fm=jpg&q=80&w=1920&auto=format&fit=crop";
 
 import { apiFetch } from "@/lib/api";
 

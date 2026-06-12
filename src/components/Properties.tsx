@@ -7,12 +7,12 @@ import { Link } from "react-router-dom";
 
 import { fetchPublicProperties, Property } from "@/lib/properties";
 
-// fallback images
-import property1 from "@/assets/property-1.jpg";
-import property2 from "@/assets/property-2.jpg";
-import property3 from "@/assets/property-3.jpg";
-import property4 from "@/assets/property-4.jpg";
-import property5 from "@/assets/property-5.jpg";
+// fallback images — London/UK properties via Unsplash
+const property1 = "https://images.unsplash.com/photo-1510265119258-db115b0e8172?fm=jpg&q=80&w=800&auto=format&fit=crop";
+const property2 = "https://images.unsplash.com/photo-1512359953714-f0c9a632ab85?fm=jpg&q=80&w=800&auto=format&fit=crop";
+const property3 = "https://images.unsplash.com/photo-1550647512-8b8a24d4f646?fm=jpg&q=80&w=800&auto=format&fit=crop";
+const property4 = "https://images.unsplash.com/photo-1609679604891-f69f884eddae?fm=jpg&q=80&w=800&auto=format&fit=crop";
+const property5 = "https://images.unsplash.com/photo-1480449649358-ee14c6ee0b17?fm=jpg&q=80&w=800&auto=format&fit=crop";
 
 const fallbackImages = [property1, property2, property3, property4, property5];
 

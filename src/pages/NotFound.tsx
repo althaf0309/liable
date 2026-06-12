@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-import heroImage from "@/assets/hero-image.jpg";
+const heroImage = "https://images.unsplash.com/photo-1640035012100-faf53d817838?fm=jpg&q=80&w=1920&auto=format&fit=crop";
 
 const NotFound = () => {
   useEffect(() => {

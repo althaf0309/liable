@@ -25,7 +25,7 @@ import {
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
-import aboutImage from "@/assets/about-image.jpg";
+const aboutImage = "https://images.unsplash.com/photo-1514557718210-26e452f8fab0?fm=jpg&q=80&w=1920&auto=format&fit=crop";
 import { apiFetch } from "@/lib/api";
 
 // ------------------ Types ------------------

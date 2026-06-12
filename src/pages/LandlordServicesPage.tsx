@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import heroImage from "@/assets/hero-image.jpg";
+const heroImage = "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?fm=jpg&q=80&w=1920&auto=format&fit=crop";
 import { Link } from "react-router-dom";
 import { apiFetch } from "@/lib/api";
 import { getAuthUser } from "@/lib/auth";

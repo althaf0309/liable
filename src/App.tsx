@@ -14,6 +14,7 @@ import ContactPage from "./pages/ContactPage";
 import TermsConditionsPage from "./pages/TermsConditionsPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import InnovationPage from "./pages/InnovationPage";
+import QuantumLinkPage from "./pages/QuantumLinkPage";
 
 import StudentServicesPage from "./pages/StudentServicesPage";
 import LandlordServicesPage from "./pages/LandlordServicesPage";
@@ -39,6 +40,7 @@ const App = () => (
           {/* Public */}
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/quantum-link" element={<QuantumLinkPage />} />
           <Route path="/innovation" element={<InnovationPage />} />
           {/* ✅ Properties */}
           <Route path="/properties" element={<PropertiesPage />} />

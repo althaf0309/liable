@@ -31,18 +31,41 @@ async function ensureCsrfCookie() {
     csrfPromise = fetch(`${API_BASE}/api/accounts/auth/csrf/`, {
       method: "GET",
       credentials: "include",
-    }).then(async (response) => {
-      try {
-        const data = await response.json();
-        csrfToken = data?.csrfToken || csrfToken;
-      } catch {
-        // Cookie-only CSRF endpoints are still valid.
-      }
-    }).finally(() => {
-      csrfPromise = null;
-    });
+    })
+      .then(async (response) => {
+        try {
+          const data = await response.json();
+          csrfToken = data?.csrfToken || csrfToken;
+        } catch {
+          // Cookie-only CSRF endpoints are still valid.
+        }
+      })
+      .catch(() => {
+        // CSRF preflight failed — proceed anyway; the server will 403 if the token is required.
+      })
+      .finally(() => {
+        csrfPromise = null;
+      });
   }
   await csrfPromise;
+}
+
+function normalizeNetworkError(err: unknown): Error {
+  if (err instanceof Error) {
+    const msg = err.message.toLowerCase();
+    if (
+      msg.includes("failed to fetch") ||
+      msg.includes("networkerror") ||
+      msg.includes("socket") ||
+      msg.includes("connection") ||
+      msg.includes("load failed") ||
+      msg.includes("network request failed")
+    ) {
+      return new Error("Unable to reach the server. Please check your connection or try again.");
+    }
+    return err;
+  }
+  return new Error("An unexpected error occurred. Please try again.");
 }
 
 export async function apiFetch(path: string, options: RequestInit = {}) {
@@ -66,12 +89,17 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
     headers["X-CSRFToken"] = csrf;
   }
 
-  const res = await fetch(url, {
-    ...options,
-    method,
-    headers,
-    credentials: "include", // ✅ REQUIRED for Django session cookie
-  });
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      ...options,
+      method,
+      headers,
+      credentials: "include",
+    });
+  } catch (err) {
+    throw normalizeNetworkError(err);
+  }
 
   const data = await parseJsonSafe(res);
 

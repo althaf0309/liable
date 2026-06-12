@@ -9,9 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import heroSlide1 from "@/assets/hero-image.jpg";
-import heroSlide2 from "@/assets/hero-slide-2.jpg";
-import heroSlide3 from "@/assets/hero-slide-3.jpg";
+const heroSlide1 = "https://images.unsplash.com/photo-1640035012100-faf53d817838?fm=jpg&q=80&w=1920&auto=format&fit=crop";
+const heroSlide2 = "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?fm=jpg&q=80&w=1920&auto=format&fit=crop";
+const heroSlide3 = "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?fm=jpg&q=80&w=1920&auto=format&fit=crop";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 

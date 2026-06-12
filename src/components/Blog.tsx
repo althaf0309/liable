@@ -7,10 +7,10 @@ import { Link } from "react-router-dom";
 
 import { fetchPublicBlogs, BlogPost } from "@/lib/blog";
 
-// fallback images (until backend provides cover_image_url)
-import blog1 from "@/assets/blog-1.jpg";
-import blog2 from "@/assets/blog-2.jpg";
-import blog3 from "@/assets/blog-3.jpg";
+// fallback images — London editorial via Unsplash
+const blog1 = "https://images.unsplash.com/photo-1532444143931-9f60a76242e7?fm=jpg&q=80&w=800&auto=format&fit=crop";
+const blog2 = "https://images.unsplash.com/photo-1514557718210-26e452f8fab0?fm=jpg&q=80&w=800&auto=format&fit=crop";
+const blog3 = "https://images.unsplash.com/photo-1480449649358-ee14c6ee0b17?fm=jpg&q=80&w=800&auto=format&fit=crop";
 
 const fallbackImages = [blog1, blog2, blog3];
 

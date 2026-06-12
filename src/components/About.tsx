@@ -2,9 +2,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Home, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AnimatedSection from "./AnimatedSection";
-import about1 from "@/assets/about-1.jpg";
-import about2 from "@/assets/about-2.jpg";
-import about3 from "@/assets/about-3.jpg";
+const about1 = "https://images.unsplash.com/photo-1526129318478-62ed807ebdf9?fm=jpg&q=80&w=800&auto=format&fit=crop";
+const about2 = "https://images.unsplash.com/photo-1566515610329-94f02c3707d6?fm=jpg&q=80&w=800&auto=format&fit=crop";
+const about3 = "https://images.unsplash.com/photo-1448906654166-444d494666b3?fm=jpg&q=80&w=800&auto=format&fit=crop";
 import { useState, useEffect, useCallback } from "react";
 
 const images = [about1, about2, about3];

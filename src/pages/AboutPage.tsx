@@ -3,7 +3,7 @@ import { Mail, Phone } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
-import aboutImage from "@/assets/about-image.jpg";
+const aboutImage = "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?fm=jpg&q=80&w=1920&auto=format&fit=crop";
 
 const AboutPage = () => {
   return (
