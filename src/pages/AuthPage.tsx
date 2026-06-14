@@ -1,11 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Eye, EyeOff, ArrowLeft, CheckCircle2, Building2, Users, MessageSquare, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { apiPost } from "@/lib/api";
+import { apiPost, API_BASE } from "@/lib/api";
 import { setAuthUser } from "@/lib/auth";
 import { submitContact } from "@/lib/contact";
 import logo from "@/assets/logo.png";
@@ -38,6 +38,10 @@ function redirectByRole(role?: string) {
 export default function AuthPage() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/accounts/auth/csrf/`, { method: "GET", credentials: "include" }).catch(() => {});
+  }, []);
 
   const initialMode: Mode = params.get("register") ? "register" : "choose";
   const initialRole: RegisterRole = params.get("register") === "landlord" ? "LANDLORD" : "STUDENT";

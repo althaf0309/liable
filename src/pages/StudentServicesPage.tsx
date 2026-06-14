@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-const heroImage = "https://images.unsplash.com/photo-1640035012100-faf53d817838?fm=jpg&q=80&w=1920&auto=format&fit=crop";
+
 import { Link } from "react-router-dom";
 import { apiFetch } from "@/lib/api";
 import { getAuthUser } from "@/lib/auth";
@@ -238,42 +238,63 @@ const StudentServicesPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: "hsl(222,52%,2%)" }}>
       <Header />
       <main className="pt-20">
         {/* Hero */}
-        <div className="relative h-64 md:h-80 overflow-hidden">
-          <img
-            src={heroImage}
-            alt="Student Services"
-            className="w-full h-full object-cover"
+        <div
+          className="relative overflow-hidden flex items-center"
+          style={{ minHeight: 340, background: "hsl(222,48%,4%)" }}
+        >
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: "radial-gradient(ellipse 70% 70% at 50% 100%, rgba(197,160,89,0.07) 0%, transparent 70%)" }}
           />
-          <div className="absolute inset-0 bg-foreground/60" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <h1 className="font-serif text-4xl md:text-5xl font-bold text-background mb-4">
-              Services for Students
-            </h1>
-            <div className="flex items-center gap-2 text-background/80 text-sm">
-              <Link to="/" className="hover:text-primary transition-colors">
-                Home
-              </Link>
-              <span>/</span>
-              <span className="text-primary">Student Services</span>
-            </div>
+          <div
+            className="absolute bottom-0 left-0 right-0 h-px"
+            style={{ background: "linear-gradient(90deg, transparent, rgba(197,160,89,0.4), transparent)" }}
+          />
+          <div className="container-custom relative z-10 px-4 py-24 text-center w-full">
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.75 }}>
+              <span
+                className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.22em] uppercase rounded-full px-4 py-1.5 mb-6"
+                style={{ color: "#C5A059", background: "rgba(197,160,89,0.08)", border: "1px solid rgba(197,160,89,0.18)" }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                Student Support
+              </span>
+              <h1
+                className="font-serif font-bold mb-4"
+                style={{ fontSize: "clamp(2rem,5vw,3.8rem)", color: "#fff" }}
+              >
+                Services for{" "}
+                <span style={{ background: "linear-gradient(135deg,#C5A059,#E8C77E,#C5A059)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                  Students
+                </span>
+              </h1>
+              <div className="flex items-center justify-center gap-2 text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
+                <Link to="/" className="hover:text-white transition-colors">Home</Link>
+                <span>/</span>
+                <span style={{ color: "#C5A059" }}>Student Services</span>
+              </div>
+            </motion.div>
           </div>
         </div>
 
         {/* Intro */}
-        <div className="section-padding">
+        <div className="section-padding" style={{ background: "hsl(222,52%,2%)" }}>
           <div className="container-custom">
             <AnimatedSection className="text-center max-w-4xl mx-auto">
-              <span className="text-primary font-semibold text-sm tracking-widest uppercase">
+              <span className="text-primary font-semibold text-sm tracking-widest uppercase" style={{ color: "#C5A059" }}>
                 Student Support
               </span>
-              <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-4 mb-6 leading-tight">
-                Your Journey to the <span className="text-primary">UK Starts Here</span>
+              <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mt-4 mb-6 leading-tight" style={{ color: "#fff" }}>
+                Your Journey to the{" "}
+                <span style={{ background: "linear-gradient(135deg,#C5A059,#E8C77E,#C5A059)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                  UK Starts Here
+                </span>
               </h2>
-              <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
+              <p className="text-base md:text-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.52)" }}>
                 We help international students settle smoothly—arrival, housing, and career support.
               </p>
 
@@ -294,33 +315,32 @@ const StudentServicesPage = () => {
         </div>
 
         {/* Services */}
-        <div className="py-12 md:py-16 bg-cream">
+        <div className="py-12 md:py-16" style={{ background: "hsl(222,48%,4%)" }}>
           <div className="container-custom">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               {services.map((service, index) => (
                 <AnimatedSection key={service.title} delay={index * 0.1}>
                   <motion.div
-                    className="bg-background rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 h-full"
-                    whileHover={{ y: -5 }}
+                    className="group relative rounded-2xl p-8 h-full"
+                    style={{ background: "rgba(255,255,255,0.03)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.07)" }}
+                    whileHover={{ y: -5, transition: { duration: 0.22 } }}
                   >
+                    <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{ border: "1px solid rgba(197,160,89,0.22)" }} />
                     <div className="flex items-start gap-6">
-                      <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
-                        <service.icon className="w-7 h-7 text-primary-foreground" />
+                      <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(197,160,89,0.1)", border: "1px solid rgba(197,160,89,0.2)" }}>
+                        <service.icon className="w-6 h-6" style={{ color: "#C5A059" }} />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-serif text-xl font-bold text-foreground mb-3">
+                        <h3 className="font-serif text-xl font-bold mb-3" style={{ color: "#fff" }}>
                           {service.title}
                         </h3>
-                        <p className="text-muted-foreground mb-4 leading-relaxed">
+                        <p className="mb-4 leading-relaxed text-sm" style={{ color: "rgba(255,255,255,0.52)" }}>
                           {service.description}
                         </p>
                         <ul className="space-y-2">
                           {service.features.map((feature) => (
-                            <li
-                              key={feature}
-                              className="flex items-center gap-2 text-sm text-muted-foreground"
-                            >
-                              <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                            <li key={feature} className="flex items-center gap-2 text-sm" style={{ color: "rgba(255,255,255,0.48)" }}>
+                              <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: "#C5A059" }} />
                               {feature}
                             </li>
                           ))}
@@ -335,31 +355,33 @@ const StudentServicesPage = () => {
         </div>
 
         {/* Additional */}
-        <div className="section-padding">
+        <div className="section-padding" style={{ background: "hsl(222,52%,2%)" }}>
           <div className="container-custom">
             <AnimatedSection className="text-center mb-12">
-              <span className="text-primary font-semibold text-sm tracking-widest uppercase">
+              <span className="font-semibold text-sm tracking-widest uppercase" style={{ color: "#C5A059" }}>
                 Additional Support
               </span>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mt-4">
+              <h2 className="font-serif text-3xl md:text-4xl font-bold mt-4" style={{ color: "#fff" }}>
                 More Ways We Can Help
               </h2>
             </AnimatedSection>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {additionalServices.map((service, index) => (
                 <AnimatedSection key={service.title} delay={index * 0.1}>
                   <motion.div
-                    className="bg-muted/30 rounded-xl p-6 text-center hover:bg-muted/50 transition-colors"
-                    whileHover={{ scale: 1.02 }}
+                    className="group relative rounded-xl p-6 text-center"
+                    style={{ background: "rgba(255,255,255,0.03)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.07)" }}
+                    whileHover={{ y: -5, transition: { duration: 0.22 } }}
                   >
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                      <service.icon className="w-6 h-6 text-primary" />
+                    <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{ border: "1px solid rgba(197,160,89,0.2)" }} />
+                    <div className="w-11 h-11 rounded-xl flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(197,160,89,0.1)", border: "1px solid rgba(197,160,89,0.18)" }}>
+                      <service.icon className="w-5 h-5" style={{ color: "#C5A059" }} />
                     </div>
-                    <h3 className="font-semibold text-foreground mb-2">
+                    <h3 className="font-semibold mb-2" style={{ color: "#fff" }}>
                       {service.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm" style={{ color: "rgba(255,255,255,0.48)" }}>
                       {service.description}
                     </p>
                   </motion.div>
@@ -371,16 +393,16 @@ const StudentServicesPage = () => {
 
         {/* ✅ Register Form (ONLY IF NOT LOGGED IN) */}
         {!isLoggedIn && (
-          <div id="register" className="section-padding bg-cream">
+          <div id="register" className="section-padding" style={{ background: "hsl(222,48%,4%)" }}>
             <div className="container-custom">
               <AnimatedSection className="text-center mb-12">
-                <span className="text-primary font-semibold text-sm tracking-widest uppercase">
+                <span className="font-semibold text-sm tracking-widest uppercase" style={{ color: "#C5A059" }}>
                   Get Started
                 </span>
-                <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mt-4">
+                <h2 className="font-serif text-3xl md:text-4xl font-bold mt-4" style={{ color: "#fff" }}>
                   Register as a Student
                 </h2>
-                <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
+                <p className="mt-4 max-w-2xl mx-auto" style={{ color: "rgba(255,255,255,0.50)" }}>
                   Fill out the form below and our team will reach out.
                 </p>
               </AnimatedSection>
@@ -388,7 +410,8 @@ const StudentServicesPage = () => {
               <AnimatedSection delay={0.2}>
                 <form
                   onSubmit={handleSubmit}
-                  className="max-w-3xl mx-auto bg-background rounded-2xl p-8 shadow-lg"
+                  className="max-w-3xl mx-auto rounded-2xl p-8"
+                  style={{ background: "rgba(255,255,255,0.03)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.08)" }}
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="md:col-span-2">

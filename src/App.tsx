@@ -16,6 +16,7 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import InnovationPage from "./pages/InnovationPage";
 import QuantumLinkPage from "./pages/QuantumLinkPage";
 
+import ServicesPage from "./pages/ServicesPage";
 import StudentServicesPage from "./pages/StudentServicesPage";
 import LandlordServicesPage from "./pages/LandlordServicesPage";
 
@@ -56,6 +57,7 @@ const App = () => (
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
 
           {/* ✅ Services - PUBLIC (no redirect to login) */}
+          <Route path="/services" element={<ServicesPage />} />
           <Route path="/services/students" element={<StudentServicesPage />} />
           <Route path="/services/landlords" element={<LandlordServicesPage />} />
 

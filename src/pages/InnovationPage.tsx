@@ -1,18 +1,66 @@
+import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
-import AnimatedSection from "@/components/AnimatedSection";
+import GlassGlobe from "@/components/GlassGlobe";
 import {
   Activity, Award, Building2, CheckCircle2, EyeOff,
   FileCheck, Gauge, GitBranch, LockKeyhole, ShieldCheck, WalletCards, ArrowRight,
 } from "lucide-react";
 
-const IMG_HERO       = "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?fm=jpg&q=80&w=1920&auto=format&fit=crop";
-const IMG_LONDON_BRIDGE = "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?fm=jpg&q=80&w=1920&auto=format&fit=crop";
-const IMG_RESIDENTIAL = "https://images.unsplash.com/photo-1526129318478-62ed807ebdf9?fm=jpg&q=80&w=1200&auto=format&fit=crop";
-const IMG_NIGHT      = "https://images.unsplash.com/photo-1640035012100-faf53d817838?fm=jpg&q=80&w=1920&auto=format&fit=crop";
+// ── Particle canvas for section backgrounds ─────────────────────
+function ParticleCanvas({ density = 40, opacity = 0.4 }: { density?: number; opacity?: number }) {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const c = ref.current;
+    if (!c) return;
+    const ctx = c.getContext("2d");
+    if (!ctx) return;
+    const resize = () => { c.width = c.offsetWidth; c.height = c.offsetHeight; };
+    resize();
+    window.addEventListener("resize", resize);
+    const pts = Array.from({ length: density }, () => ({
+      x: Math.random() * c.width, y: Math.random() * c.height,
+      vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+    }));
+    let id: number;
+    const draw = () => {
+      ctx.clearRect(0, 0, c.width, c.height);
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > c.width) p.vx *= -1;
+        if (p.y < 0 || p.y > c.height) p.vy *= -1;
+        for (let j = i + 1; j < pts.length; j++) {
+          const q = pts[j];
+          const d = Math.hypot(p.x - q.x, p.y - q.y);
+          if (d < 140) {
+            ctx.strokeStyle = `rgba(197,160,89,${(1 - d / 140) * 0.14})`;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+          }
+        }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1.4, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(197,160,89,0.4)`;
+        ctx.fill();
+      }
+      id = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => { cancelAnimationFrame(id); window.removeEventListener("resize", resize); };
+  }, [density]);
+  return (
+    <canvas
+      ref={ref}
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      style={{ opacity }}
+    />
+  );
+}
 
+// ── Data ────────────────────────────────────────────────────────
 const innovations = [
   {
     title: "ISRA",
@@ -21,8 +69,9 @@ const innovations = [
     positioning: "Liable evaluates tenancy readiness using operational indicators instead of relying only on traditional UK credit systems.",
     sees: ["Student: reliability tier, affordability range, improvement guidance", "Admin: score breakdown, risk indicators, completeness, behavioural signals", "Landlord: tier only, no personal scoring details"],
     icon: ShieldCheck,
-    accent: "hsl(42,80%,50%)",
-    img: "https://images.unsplash.com/photo-1640035012100-faf53d817838?fm=jpg&q=80&w=800&auto=format&fit=crop",
+    color: "#C5A059",
+    accent: "rgba(197,160,89,0.10)",
+    border: "rgba(197,160,89,0.20)",
   },
   {
     title: "PropMatch",
@@ -31,18 +80,20 @@ const innovations = [
     positioning: "Properties are allocated through suitability, affordability, availability, occupancy rules, and tenancy stability.",
     sees: ["Hard filters: budget, availability, occupancy rules, tenancy suitability", "Soft factors: lifestyle compatibility, commute, property preferences", "Landlords cannot browse, filter, or rank student profiles"],
     icon: Building2,
-    accent: "hsl(210,74%,52%)",
-    img: "https://images.unsplash.com/photo-1510265119258-db115b0e8172?fm=jpg&q=80&w=800&auto=format&fit=crop",
+    color: "#4a9eff",
+    accent: "rgba(74,158,255,0.09)",
+    border: "rgba(74,158,255,0.18)",
   },
   {
     title: "THS",
     name: "Tenancy Health Score",
     purpose: "Live tenancy stability tracking during occupancy.",
     positioning: "Liable monitors tenancy health during occupancy to support stable housing and reduce avoidable tenancy breakdown.",
-    sees: ["Tracks rent behaviour, complaints, communication, tenancy stability, property care, and occupancy continuity", "Presented as Healthy, Stable, or Needs Attention", "Internal tenancy operational health indicator, not a tenant ranking engine"],
+    sees: ["Tracks rent behaviour, complaints, communication, tenancy stability, property care, and occupancy continuity", "Presented as Healthy, Stable, or Needs Attention", "Internal tenancy operational health indicator"],
     icon: Activity,
-    accent: "hsl(42,80%,50%)",
-    img: "https://images.unsplash.com/photo-1512359953714-f0c9a632ab85?fm=jpg&q=80&w=800&auto=format&fit=crop",
+    color: "#22c55e",
+    accent: "rgba(34,197,94,0.09)",
+    border: "rgba(34,197,94,0.18)",
   },
   {
     title: "PTR",
@@ -51,8 +102,9 @@ const innovations = [
     positioning: "Liable records property trust through responsiveness, maintenance history, safety documentation, rent and deposit handling, and tenant feedback signals.",
     sees: ["Landlord responsiveness and maintenance history", "Safety documentation and compliance follow-ups", "Rent and deposit handling with tenant feedback summary", "Property-level trust status without exposing private student details"],
     icon: FileCheck,
-    accent: "hsl(210,74%,52%)",
-    img: "https://images.unsplash.com/photo-1550647512-8b8a24d4f646?fm=jpg&q=80&w=800&auto=format&fit=crop",
+    color: "#C5A059",
+    accent: "rgba(197,160,89,0.10)",
+    border: "rgba(197,160,89,0.20)",
   },
   {
     title: "VTR",
@@ -61,18 +113,20 @@ const innovations = [
     positioning: "Students can build recognised UK tenancy history after successful occupancy.",
     sees: ["Tenancy completion status", "Payment consistency and tenancy duration", "Property care summary without sensitive personal details", "No immigration details, raw complaints, or personal sensitive data"],
     icon: Award,
-    accent: "hsl(42,80%,50%)",
-    img: "https://images.unsplash.com/photo-1526129318478-62ed807ebdf9?fm=jpg&q=80&w=800&auto=format&fit=crop",
+    color: "#a78bfa",
+    accent: "rgba(167,139,250,0.09)",
+    border: "rgba(167,139,250,0.18)",
   },
   {
     title: "Escrow",
     name: "Controlled Payment Flow",
     purpose: "Future controlled payment layer for reducing uncertainty between landlord and tenant.",
     positioning: "Liable plans rent and deposit traceability through clearer transaction records and controlled payment visibility.",
-    sees: ["Roadmap layer, not a live payment gateway in the Year 1 proof", "Rent and deposit traceability", "Clearer payment status records for admin oversight"],
+    sees: ["Roadmap layer, not a live payment gateway in Year 1", "Rent and deposit traceability", "Clearer payment status records for admin oversight"],
     icon: WalletCards,
-    accent: "hsl(210,74%,52%)",
-    img: "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?fm=jpg&q=80&w=800&auto=format&fit=crop",
+    color: "#4a9eff",
+    accent: "rgba(74,158,255,0.09)",
+    border: "rgba(74,158,255,0.18)",
   },
   {
     title: "PYO",
@@ -81,18 +135,20 @@ const innovations = [
     positioning: "Liable monitors occupancy continuity and identifies vacancy risk windows early to reduce void periods.",
     sees: ["Current proof: 60-day void-risk alert", "Future: seasonal intake intelligence", "Connects to 12-month occupancy continuity"],
     icon: Gauge,
-    accent: "hsl(42,80%,50%)",
-    img: "https://images.unsplash.com/photo-1480449649358-ee14c6ee0b17?fm=jpg&q=80&w=800&auto=format&fit=crop",
+    color: "#C5A059",
+    accent: "rgba(197,160,89,0.10)",
+    border: "rgba(197,160,89,0.20)",
   },
   {
     title: "CVS",
     name: "Controlled Visibility System",
     purpose: "Limits what tenants, landlords, and admins can see based on role, verified status, readiness stage, and compliance clearance.",
     positioning: "Role-based visibility protects student privacy and reduces open-selection bias.",
-    sees: ["Student: own dashboard, support guidance, matched properties", "Landlord: assigned property, tenancy status, occupancy status, tier labels only", "Admin: operational controls, compliance tools, full workflow"],
+    sees: ["Student: own dashboard, support guidance, matched properties", "Landlord: assigned property, tenancy status, tier labels only", "Admin: operational controls, compliance tools, full workflow"],
     icon: EyeOff,
-    accent: "hsl(210,74%,52%)",
-    img: "https://images.unsplash.com/photo-1566515610329-94f02c3707d6?fm=jpg&q=80&w=800&auto=format&fit=crop",
+    color: "#22c55e",
+    accent: "rgba(34,197,94,0.09)",
+    border: "rgba(34,197,94,0.18)",
   },
 ];
 
@@ -130,73 +186,180 @@ const ptrExclusions = [
 ];
 
 const complianceItems = [
-  { title: "Controlled Documents", body: "Private document handling, authenticated access, and admin review at every stage.", icon: LockKeyhole },
-  { title: "Operational Audit", body: "Admin activity is structured around audit-oriented platform controls.", icon: GitBranch },
-  { title: "Managed Issue Flow", body: "Complaints use status tracking, evidence uploads, and controlled landlord visibility.", icon: FileCheck },
+  {
+    title: "Controlled Documents",
+    body: "Private document handling, authenticated access, and admin review at every stage.",
+    icon: LockKeyhole,
+  },
+  {
+    title: "Operational Audit",
+    body: "Admin activity is structured around audit-oriented platform controls.",
+    icon: GitBranch,
+  },
+  {
+    title: "Managed Issue Flow",
+    body: "Complaints use status tracking, evidence uploads, and controlled landlord visibility.",
+    icon: FileCheck,
+  },
 ];
+
+const DARK = "hsl(222,52%,2%)";
+const DARK2 = "hsl(222,48%,4%)";
 
 export default function InnovationPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: DARK }}>
       <Header />
-      <main className="pt-24">
+      <main className="pt-20">
 
-        {/* ── HERO ──────────────────────────────────────────────── */}
-        <section className="relative h-[75vh] min-h-[520px] flex items-center overflow-hidden">
-          <img
-            src={IMG_HERO}
-            alt="London skyline from The Shard"
-            className="absolute inset-0 w-full h-full object-cover object-center scale-105"
+        {/* ── HERO ─────────────────────────────────────────────────── */}
+        <section
+          className="relative min-h-[70vh] flex items-center overflow-hidden"
+          style={{ background: DARK2 }}
+        >
+          <ParticleCanvas density={50} opacity={0.5} />
+
+          {/* Gold aurora */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(ellipse 70% 60% at 50% 100%, rgba(197,160,89,0.07) 0%, transparent 70%)",
+            }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[hsl(222,48%,4%)]/95 via-[hsl(222,48%,4%)]/75 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+          <div
+            className="absolute bottom-0 left-0 right-0 h-px"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, rgba(197,160,89,0.4), transparent)",
+            }}
+          />
 
-          <div className="container-custom relative z-10 px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="max-w-2xl"
-            >
-              <span className="inline-block text-primary font-semibold text-xs tracking-[0.22em] uppercase mb-5 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20">
-                Liable Innovation Model
-              </span>
-              <h1 className="font-serif text-5xl md:text-7xl font-bold text-white leading-tight mb-6">
-                Controlled student housing{" "}
-                <span className="text-primary italic">infrastructure</span>
-              </h1>
-              <p className="text-white/70 text-lg md:text-xl leading-relaxed">
-                Liable is a managed operational platform for international student housing — controlled allocation, tenancy support, privacy, and occupancy continuity.
-              </p>
-            </motion.div>
+          <div className="container-custom relative z-10 px-4 py-24">
+            <div className="grid lg:grid-cols-2 gap-8 items-center">
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.85, ease: [0.21, 0.47, 0.32, 0.98] }}
+              >
+                <span
+                  className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.22em] uppercase rounded-full px-4 py-1.5 mb-6"
+                  style={{
+                    color: "#C5A059",
+                    background: "rgba(197,160,89,0.08)",
+                    border: "1px solid rgba(197,160,89,0.18)",
+                  }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                  Liable Innovation Model
+                </span>
+
+                <h1
+                  className="font-serif font-bold leading-tight mb-6"
+                  style={{ fontSize: "clamp(2.4rem,5vw,4rem)", color: "#fff" }}
+                >
+                  Controlled student housing{" "}
+                  <span
+                    style={{
+                      background: "linear-gradient(135deg,#C5A059,#E8C77E,#C5A059)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    infrastructure
+                  </span>
+                </h1>
+
+                <p className="text-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.58)" }}>
+                  Liable is a managed operational platform for international student housing —
+                  controlled allocation, tenancy support, privacy, and occupancy continuity.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1, delay: 0.2 }}
+                className="relative h-[340px] sm:h-[420px] lg:h-[480px]"
+              >
+                <GlassGlobe />
+              </motion.div>
+            </div>
           </div>
         </section>
 
-        {/* ── SYSTEM FLOW ───────────────────────────────────────── */}
-        <section className="section-padding bg-[hsl(220,44%,8%)]">
-          <div className="container-custom">
-            <AnimatedSection className="mb-12">
-              <span className="text-primary font-semibold text-xs tracking-[0.2em] uppercase">System Flow</span>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mt-3">
+        {/* ── SYSTEM FLOW ──────────────────────────────────────────── */}
+        <section className="relative py-20 overflow-hidden" style={{ background: DARK }}>
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(197,160,89,0.04) 0%, transparent 70%)",
+            }}
+          />
+          <div className="container-custom px-4 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="mb-12"
+            >
+              <span
+                className="text-[11px] font-semibold tracking-[0.22em] uppercase"
+                style={{ color: "#C5A059" }}
+              >
+                System Flow
+              </span>
+              <h2
+                className="font-serif font-bold mt-2"
+                style={{ fontSize: "clamp(1.8rem,3.5vw,2.8rem)", color: "#fff" }}
+              >
                 How the controlled workflow operates
               </h2>
-            </AnimatedSection>
+            </motion.div>
 
+            {/* Flow steps */}
             <div className="relative">
-              {/* connecting line */}
-              <div className="hidden md:block absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent -translate-y-1/2 z-0" />
+              {/* Connecting line */}
+              <div
+                className="hidden md:block absolute top-1/2 left-0 right-0 h-px -translate-y-1/2 z-0"
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent, rgba(197,160,89,0.2), transparent)",
+                }}
+              />
               <div className="grid grid-cols-2 md:grid-cols-7 gap-3 relative z-10">
-                {flows.map((step, index) => (
+                {flows.map((step, i) => (
                   <motion.div
                     key={step}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: index * 0.07 }}
-                    className="bg-background border border-border rounded-xl p-4 text-center hover:border-primary/30 transition-colors group"
+                    transition={{ duration: 0.4, delay: i * 0.07 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    className="relative group rounded-xl p-4 text-center"
+                    style={{
+                      background: "rgba(255,255,255,0.03)",
+                      backdropFilter: "blur(12px)",
+                      border: "1px solid rgba(255,255,255,0.07)",
+                    }}
                   >
-                    <p className="text-primary font-bold text-xs tracking-widest mb-2">{String(index + 1).padStart(2, "0")}</p>
-                    <p className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">{step}</p>
+                    <div
+                      className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                      style={{ border: "1px solid rgba(197,160,89,0.25)" }}
+                    />
+                    <p
+                      className="font-bold text-xs tracking-widest mb-2"
+                      style={{ color: "#C5A059" }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </p>
+                    <p className="font-semibold text-xs" style={{ color: "rgba(255,255,255,0.75)" }}>
+                      {step}
+                    </p>
                   </motion.div>
                 ))}
               </div>
@@ -204,72 +367,134 @@ export default function InnovationPage() {
           </div>
         </section>
 
-        {/* ── INNOVATION MODULE CARDS ────────────────────────────── */}
-        <section className="section-padding">
-          <div className="container-custom">
-            <AnimatedSection className="text-center max-w-2xl mx-auto mb-14">
-              <span className="text-primary font-semibold text-xs tracking-[0.2em] uppercase">Platform Modules</span>
-              <h2 className="font-serif text-3xl md:text-5xl font-bold text-foreground mt-3">
+        {/* ── MODULE CARDS ─────────────────────────────────────────── */}
+        <section className="relative py-24 overflow-hidden" style={{ background: DARK2 }}>
+          <ParticleCanvas density={35} opacity={0.35} />
+
+          <div
+            className="absolute top-0 left-0 right-0 h-px"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, rgba(197,160,89,0.3), transparent)",
+            }}
+          />
+
+          <div className="container-custom px-4 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="text-center max-w-2xl mx-auto mb-14"
+            >
+              <span
+                className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.22em] uppercase rounded-full px-4 py-1.5 mb-5"
+                style={{
+                  color: "#C5A059",
+                  background: "rgba(197,160,89,0.08)",
+                  border: "1px solid rgba(197,160,89,0.16)",
+                }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                Platform Modules
+              </span>
+              <h2
+                className="font-serif font-bold leading-tight mb-4"
+                style={{ fontSize: "clamp(2rem,4vw,3.2rem)", color: "#fff" }}
+              >
                 Eight operational layers
               </h2>
-              <p className="text-muted-foreground mt-4 text-lg">
+              <p style={{ color: "rgba(255,255,255,0.50)" }}>
                 Each layer is designed to protect students, build landlord trust, and give operators complete control.
               </p>
-            </AnimatedSection>
+            </motion.div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {innovations.map((item, i) => (
                 <motion.article
                   key={item.title}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 32 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-40px" }}
-                  transition={{ duration: 0.5, delay: i * 0.06 }}
-                  className="group relative border border-border rounded-2xl bg-card overflow-hidden hover:border-primary/25 transition-all duration-300 hover:shadow-[0_0_30px_hsl(42_80%_50%/0.08)] hover:-translate-y-0.5"
+                  transition={{ duration: 0.55, delay: i * 0.06 }}
+                  whileHover={{ y: -5, transition: { duration: 0.22 } }}
+                  className="group relative rounded-2xl overflow-hidden"
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    backdropFilter: "blur(16px)",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                  }}
                 >
-                  {/* Module image header */}
-                  <div className="relative h-40 overflow-hidden">
-                    <img
-                      src={item.img}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[hsl(222,48%,4%)]/30 to-[hsl(222,48%,4%)]/85" />
-                    <div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{ background: `linear-gradient(135deg, ${item.accent}18, transparent 60%)` }}
-                    />
-                    {/* Top accent line */}
-                    <div
-                      className="absolute top-0 left-0 right-0 h-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      style={{ background: `linear-gradient(90deg, transparent, ${item.accent}, transparent)` }}
-                    />
-                    {/* Icon + title overlay */}
-                    <div className="absolute bottom-3 left-4 flex items-center gap-3">
+                  {/* Hover glow */}
+                  <div
+                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-350 pointer-events-none"
+                    style={{
+                      border: `1px solid ${item.border}`,
+                      boxShadow: `0 0 40px ${item.accent}`,
+                    }}
+                  />
+
+                  {/* Top accent strip */}
+                  <div
+                    className="h-0.5 w-full opacity-0 group-hover:opacity-100 transition-opacity duration-350"
+                    style={{
+                      background: `linear-gradient(90deg, transparent, ${item.color}60, transparent)`,
+                    }}
+                  />
+
+                  <div className="p-6">
+                    {/* Icon + title row */}
+                    <div className="flex items-start gap-4 mb-4">
                       <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                        style={{ background: `${item.accent}20`, border: `1px solid ${item.accent}40` }}
+                        className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                        style={{ background: item.accent, border: `1px solid ${item.border}` }}
                       >
-                        <item.icon className="w-5 h-5" style={{ color: item.accent }} />
+                        <item.icon className="w-5 h-5" style={{ color: item.color }} />
                       </div>
                       <div>
-                        <p className="font-bold text-[10px] tracking-[0.2em] uppercase" style={{ color: item.accent }}>{item.title}</p>
-                        <h3 className="font-serif text-base font-bold text-white leading-tight">{item.name}</h3>
+                        <p
+                          className="text-[10px] font-bold uppercase tracking-[0.2em] mb-0.5"
+                          style={{ color: item.color }}
+                        >
+                          {item.title}
+                        </p>
+                        <h3 className="font-serif text-lg font-bold leading-tight" style={{ color: "#fff" }}>
+                          {item.name}
+                        </h3>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Card body */}
-                  <div className="p-5">
-                    <p className="text-muted-foreground text-sm leading-relaxed mb-4">{item.purpose}</p>
-                    <div className="rounded-lg bg-muted/40 p-3.5 border border-border/50 mb-4">
-                      <p className="text-[10px] font-bold text-foreground uppercase tracking-widest mb-1.5">Platform positioning</p>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{item.positioning}</p>
+                    <p className="text-sm leading-relaxed mb-4" style={{ color: "rgba(255,255,255,0.50)" }}>
+                      {item.purpose}
+                    </p>
+
+                    {/* Positioning box */}
+                    <div
+                      className="rounded-lg p-3.5 mb-4"
+                      style={{
+                        background: `${item.accent}`,
+                        border: `1px solid ${item.border}`,
+                      }}
+                    >
+                      <p
+                        className="text-[9px] font-bold uppercase tracking-[0.18em] mb-1"
+                        style={{ color: item.color }}
+                      >
+                        Platform positioning
+                      </p>
+                      <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.58)" }}>
+                        {item.positioning}
+                      </p>
                     </div>
+
+                    {/* Bullet list */}
                     <ul className="space-y-1.5">
                       {item.sees.map((line) => (
-                        <li key={line} className="text-xs text-muted-foreground flex gap-2 items-start">
-                          <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ background: item.accent }} />
+                        <li key={line} className="flex items-start gap-2 text-xs" style={{ color: "rgba(255,255,255,0.48)" }}>
+                          <span
+                            className="w-1.5 h-1.5 rounded-full mt-1 flex-shrink-0"
+                            style={{ background: item.color }}
+                          />
                           {line}
                         </li>
                       ))}
@@ -281,149 +506,263 @@ export default function InnovationPage() {
           </div>
         </section>
 
-        {/* ── IMAGE BREAK — London Bridge ───────────────────────── */}
-        <div className="relative h-[320px] md:h-[420px] overflow-hidden">
-          <img
-            src={IMG_LONDON_BRIDGE}
-            alt="London Bridge"
-            className="w-full h-full object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background/80" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <AnimatedSection className="text-center px-4">
-              <p className="font-serif text-3xl md:text-4xl font-bold text-white drop-shadow-xl">
-                Built for London. Designed for the world.
-              </p>
-            </AnimatedSection>
-          </div>
-        </div>
-
-        {/* ── THS SECTION — split with image ────────────────────── */}
-        <section className="section-padding">
-          <div className="container-custom grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-            {/* image side */}
-            <AnimatedSection direction="left" className="relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                <img
-                  src={IMG_RESIDENTIAL}
-                  alt="London residential street"
-                  className="w-full h-full object-cover"
+        {/* ── THS SECTION ──────────────────────────────────────────── */}
+        <section className="relative py-24 overflow-hidden" style={{ background: DARK }}>
+          <div className="container-custom px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Visual card side */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="relative"
+            >
+              <div
+                className="rounded-2xl p-8 relative overflow-hidden"
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  backdropFilter: "blur(16px)",
+                  border: "1px solid rgba(34,197,94,0.2)",
+                }}
+              >
+                <div
+                  className="absolute top-0 left-0 right-0 h-0.5"
+                  style={{
+                    background: "linear-gradient(90deg, transparent, #22c55e60, transparent)",
+                  }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="flex gap-2">
-                    {["Healthy", "Stable", "Needs Attention"].map((label, i) => (
-                      <span
-                        key={label}
-                        className="text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm"
-                        style={{
-                          background: ["hsl(142,70%,45%)/20", "hsl(42,80%,50%)/20", "hsl(0,70%,55%)/20"][i],
-                          color: ["hsl(142,70%,60%)", "hsl(42,80%,65%)", "hsl(0,70%,70%)"][i],
-                          border: `1px solid ${["hsl(142,70%,45%)/30", "hsl(42,80%,50%)/30", "hsl(0,70%,55%)/30"][i]}`,
-                        }}
-                      >
-                        {label}
-                      </span>
-                    ))}
-                  </div>
+                <div className="flex flex-col gap-4">
+                  {["Healthy", "Stable", "Needs Attention"].map((label, i) => {
+                    const bars = [82, 58, 28];
+                    const cols = ["#22c55e", "#C5A059", "#ef4444"];
+                    return (
+                      <div key={label}>
+                        <div className="flex justify-between mb-2">
+                          <span className="text-xs font-bold" style={{ color: cols[i] }}>{label}</span>
+                          <span className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>{bars[i]}%</span>
+                        </div>
+                        <div
+                          className="h-1.5 rounded-full overflow-hidden"
+                          style={{ background: "rgba(255,255,255,0.08)" }}
+                        >
+                          <motion.div
+                            initial={{ width: 0 }}
+                            whileInView={{ width: `${bars[i]}%` }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 1.2, delay: 0.3 + i * 0.15, ease: "easeOut" }}
+                            className="h-full rounded-full"
+                            style={{ background: cols[i] }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
-              <div className="absolute -bottom-3 -right-3 w-full h-full border-2 border-primary/20 rounded-2xl -z-10" />
-            </AnimatedSection>
+              {/* Shadow frame */}
+              <div
+                className="absolute -bottom-3 -right-3 w-full h-full rounded-2xl -z-10"
+                style={{ border: "1px solid rgba(34,197,94,0.1)" }}
+              />
+            </motion.div>
 
-            {/* text side */}
-            <AnimatedSection direction="right" delay={0.2}>
-              <span className="text-primary font-semibold text-xs tracking-[0.2em] uppercase">Live Tenancy Monitoring</span>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mt-3 mb-5">
+            {/* Text side */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.15 }}
+            >
+              <span
+                className="text-[11px] font-semibold tracking-[0.22em] uppercase"
+                style={{ color: "#C5A059" }}
+              >
+                Live Tenancy Monitoring
+              </span>
+              <h2
+                className="font-serif font-bold mt-2 mb-5"
+                style={{ fontSize: "clamp(1.8rem,3.5vw,2.8rem)", color: "#fff" }}
+              >
                 THS supports stable occupancy during the tenancy
               </h2>
-              <p className="text-muted-foreground leading-relaxed mb-6">
-                The Tenancy Health Score is an internal tenancy operational health indicator. It helps Liable identify where support may be needed during occupancy, without presenting the system as surveillance, punishment, or a tenant ranking engine.
+              <p className="text-sm leading-relaxed mb-6" style={{ color: "rgba(255,255,255,0.52)" }}>
+                The Tenancy Health Score is an internal operational health indicator. It helps Liable identify
+                where support may be needed during occupancy, without presenting the system as surveillance or a tenant ranking engine.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {tenancyHealthItems.map((item) => (
-                  <div key={item} className="flex items-center gap-3 rounded-lg bg-card border border-border p-3">
-                    <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground">{item}</span>
+                  <div
+                    key={item}
+                    className="flex items-center gap-3 rounded-xl p-3"
+                    style={{
+                      background: "rgba(255,255,255,0.03)",
+                      border: "1px solid rgba(255,255,255,0.07)",
+                    }}
+                  >
+                    <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: "#22c55e" }} />
+                    <span className="text-sm" style={{ color: "rgba(255,255,255,0.68)" }}>{item}</span>
                   </div>
                 ))}
               </div>
-            </AnimatedSection>
+            </motion.div>
           </div>
         </section>
 
-        {/* ── PTR SECTION ───────────────────────────────────────── */}
-        <section className="section-padding bg-[hsl(220,44%,8%)]">
-          <div className="container-custom grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-            <AnimatedSection direction="left">
-              <span className="text-primary font-semibold text-xs tracking-[0.2em] uppercase">Property Trust Record</span>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mt-3 mb-5">
+        {/* ── PTR SECTION ──────────────────────────────────────────── */}
+        <section className="relative py-24 overflow-hidden" style={{ background: DARK2 }}>
+          <div
+            className="absolute top-0 left-0 right-0 h-px"
+            style={{
+              background: "linear-gradient(90deg, transparent, rgba(197,160,89,0.25), transparent)",
+            }}
+          />
+          <div className="container-custom px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+            >
+              <span
+                className="text-[11px] font-semibold tracking-[0.22em] uppercase"
+                style={{ color: "#C5A059" }}
+              >
+                Property Trust Record
+              </span>
+              <h2
+                className="font-serif font-bold mt-2 mb-5"
+                style={{ fontSize: "clamp(1.8rem,3.5vw,2.8rem)", color: "#fff" }}
+              >
                 PTR records property reliability inside the platform
               </h2>
-              <p className="text-muted-foreground leading-relaxed mb-6">
-                Property Trust Record gives Liable a structured way to monitor property reliability, landlord responsiveness, maintenance history, safety documentation, and tenant feedback signals — balancing ISRA and THS by assessing the property side of the housing relationship.
+              <p className="text-sm leading-relaxed mb-6" style={{ color: "rgba(255,255,255,0.52)" }}>
+                Property Trust Record gives Liable a structured way to monitor property reliability, landlord responsiveness,
+                maintenance history, safety documentation, and tenant feedback signals.
               </p>
-              <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 text-center">
-                <p className="text-sm font-semibold text-foreground">Property Operations → PTR Status Generated</p>
-                <div className="flex gap-3 justify-center mt-3">
+              <div
+                className="rounded-xl p-5 text-center"
+                style={{
+                  background: "rgba(197,160,89,0.05)",
+                  border: "1px solid rgba(197,160,89,0.15)",
+                }}
+              >
+                <p className="text-sm font-semibold mb-3" style={{ color: "#fff" }}>
+                  Property Operations → PTR Status Generated
+                </p>
+                <div className="flex gap-3 justify-center">
                   {["Strong", "Stable", "Needs Review"].map((s) => (
-                    <span key={s} className="text-xs font-bold text-primary px-3 py-1 rounded-full bg-primary/10 border border-primary/20">{s}</span>
+                    <span
+                      key={s}
+                      className="text-xs font-bold px-3 py-1 rounded-full"
+                      style={{
+                        color: "#C5A059",
+                        background: "rgba(197,160,89,0.1)",
+                        border: "1px solid rgba(197,160,89,0.2)",
+                      }}
+                    >
+                      {s}
+                    </span>
                   ))}
                 </div>
               </div>
-            </AnimatedSection>
+            </motion.div>
 
-            <div className="grid grid-cols-1 gap-5">
-              <AnimatedSection direction="right" delay={0.1}>
-                <div className="rounded-xl border border-border bg-card p-6">
-                  <p className="text-sm font-bold text-foreground uppercase tracking-wide mb-4">PTR includes</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {ptrIncludes.map((item) => (
-                      <div key={item} className="flex items-center gap-3 rounded-lg bg-muted/60 p-3">
-                        <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
-                        <span className="text-sm text-muted-foreground">{item}</span>
-                      </div>
-                    ))}
-                  </div>
+            <div className="grid grid-cols-1 gap-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="rounded-xl p-6"
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.07)",
+                }}
+              >
+                <p
+                  className="text-[10px] font-bold uppercase tracking-widest mb-4"
+                  style={{ color: "rgba(255,255,255,0.5)" }}
+                >
+                  PTR includes
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {ptrIncludes.map((item) => (
+                    <div key={item} className="flex items-center gap-3">
+                      <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: "#C5A059" }} />
+                      <span className="text-sm" style={{ color: "rgba(255,255,255,0.65)" }}>{item}</span>
+                    </div>
+                  ))}
                 </div>
-              </AnimatedSection>
-              <AnimatedSection direction="right" delay={0.2}>
-                <div className="rounded-xl border border-border bg-card p-6">
-                  <p className="text-sm font-bold text-foreground uppercase tracking-wide mb-4">PTR does not expose</p>
-                  <div className="grid grid-cols-1 gap-3">
-                    {ptrExclusions.map((item) => (
-                      <div key={item} className="flex items-center gap-2 rounded-lg bg-muted/40 p-3">
-                        <span className="w-4 h-4 rounded-full border border-border flex items-center justify-center flex-shrink-0">
-                          <span className="w-1.5 h-0.5 bg-muted-foreground rounded-full" />
-                        </span>
-                        <span className="text-sm text-muted-foreground">{item}</span>
-                      </div>
-                    ))}
-                  </div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="rounded-xl p-6"
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.07)",
+                }}
+              >
+                <p
+                  className="text-[10px] font-bold uppercase tracking-widest mb-4"
+                  style={{ color: "rgba(255,255,255,0.5)" }}
+                >
+                  PTR does not expose
+                </p>
+                <div className="grid grid-cols-1 gap-2.5">
+                  {ptrExclusions.map((item) => (
+                    <div key={item} className="flex items-center gap-3">
+                      <span
+                        className="w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0"
+                        style={{ borderColor: "rgba(255,255,255,0.15)" }}
+                      >
+                        <span className="w-1.5 h-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.3)" }} />
+                      </span>
+                      <span className="text-sm" style={{ color: "rgba(255,255,255,0.50)" }}>{item}</span>
+                    </div>
+                  ))}
                 </div>
-              </AnimatedSection>
+              </motion.div>
             </div>
           </div>
         </section>
 
-        {/* ── COMPLIANCE — full-bleed dark image ────────────────── */}
-        <section className="relative py-24 md:py-32 overflow-hidden">
-          <img
-            src={IMG_NIGHT}
-            alt="London aerial at night"
-            className="absolute inset-0 w-full h-full object-cover object-center"
+        {/* ── COMPLIANCE ───────────────────────────────────────────── */}
+        <section className="relative py-24 overflow-hidden" style={{ background: DARK }}>
+          <ParticleCanvas density={30} opacity={0.3} />
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(ellipse 80% 50% at 50% 100%, rgba(197,160,89,0.05) 0%, transparent 70%)",
+            }}
           />
-          <div className="absolute inset-0 bg-[hsl(222,48%,4%)]/88" />
 
-          <div className="container-custom relative z-10">
-            <AnimatedSection className="mb-14">
-              <span className="text-primary font-semibold text-xs tracking-[0.2em] uppercase">Compliance-Led Infrastructure</span>
-              <h2 className="font-serif text-3xl md:text-5xl font-bold text-white mt-3">
+          <div className="container-custom px-4 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="mb-14"
+            >
+              <span
+                className="text-[11px] font-semibold tracking-[0.22em] uppercase"
+                style={{ color: "#C5A059" }}
+              >
+                Compliance-Led Infrastructure
+              </span>
+              <h2
+                className="font-serif font-bold mt-2"
+                style={{ fontSize: "clamp(1.8rem,3.5vw,2.8rem)", color: "#fff" }}
+              >
                 Trust is built into the workflow
               </h2>
-            </AnimatedSection>
+            </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {complianceItems.map((item, i) => (
                 <motion.div
                   key={item.title}
@@ -431,15 +770,35 @@ export default function InnovationPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="bg-white/5 border border-white/10 rounded-2xl p-7 backdrop-blur-sm hover:bg-white/8 transition-colors group"
+                  whileHover={{ y: -6, transition: { duration: 0.22 } }}
+                  className="group relative rounded-2xl p-7"
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    backdropFilter: "blur(16px)",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                  }}
                 >
-                  <div className="w-12 h-12 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center mb-5">
-                    <item.icon className="w-5 h-5 text-primary" />
+                  <div
+                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                    style={{ border: "1px solid rgba(197,160,89,0.2)" }}
+                  />
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
+                    style={{
+                      background: "rgba(197,160,89,0.1)",
+                      border: "1px solid rgba(197,160,89,0.2)",
+                    }}
+                  >
+                    <item.icon className="w-5 h-5" style={{ color: "#C5A059" }} />
                   </div>
-                  <h3 className="font-serif text-xl font-bold text-white mb-3">{item.title}</h3>
-                  <p className="text-white/65 text-sm leading-relaxed">{item.body}</p>
-                  <div className="mt-5 flex items-center gap-2 text-primary text-xs font-semibold group-hover:gap-3 transition-all">
-                    <ArrowRight className="w-3.5 h-3.5" />
+                  <h3 className="font-serif text-xl font-bold mb-3" style={{ color: "#fff" }}>
+                    {item.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.52)" }}>
+                    {item.body}
+                  </p>
+                  <div className="mt-5 flex items-center gap-1.5 transition-all duration-200 group-hover:gap-2.5">
+                    <ArrowRight className="w-3.5 h-3.5" style={{ color: "#C5A059" }} />
                   </div>
                 </motion.div>
               ))}

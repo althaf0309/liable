@@ -112,6 +112,14 @@ const Header = () => {
                     align="start"
                     className="bg-[hsl(220,44%,8%)] border border-[hsl(220,30%,14%)] shadow-2xl z-50"
                   >
+                    <DropdownMenuItem asChild>
+                      <Link
+                        to="/services"
+                        className="cursor-pointer text-sm font-medium text-foreground hover:text-primary hover:bg-[hsl(220,40%,12%)] px-4 py-2"
+                      >
+                        All Services
+                      </Link>
+                    </DropdownMenuItem>
                     {serviceOptions.map((option) => (
                       <DropdownMenuItem key={option.name} asChild>
                         <Link
@@ -190,6 +198,13 @@ const Header = () => {
                       {link.name}
                     </span>
                     <div className="flex flex-col pl-6">
+                      <Link
+                        to="/services"
+                        className="text-sm text-muted-foreground hover:text-primary transition-colors px-4 py-2"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        All Services
+                      </Link>
                       {serviceOptions.map((option) => (
                         <Link
                           key={option.name}

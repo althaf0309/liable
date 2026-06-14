@@ -25,8 +25,12 @@ import {
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
-const aboutImage = "https://images.unsplash.com/photo-1514557718210-26e452f8fab0?fm=jpg&q=80&w=1920&auto=format&fit=crop";
+import GlassGlobe from "@/components/GlassGlobe";
 import { apiFetch } from "@/lib/api";
+
+const DARK = "hsl(222,52%,2%)";
+const DARK2 = "hsl(222,48%,4%)";
+const darkField = "bg-white/[0.04] border-white/10 text-[#F5F2ED] placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#C5A059]/40";
 
 // ------------------ Types ------------------
 type PropertyImage = {
@@ -99,12 +103,13 @@ const PropertyCard = ({ property }: { property: Property }) => {
 
   return (
     <motion.div
-      className="bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+      className="group rounded-2xl overflow-hidden transition-all duration-300"
+      style={{ background: "rgba(255,255,255,0.03)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.08)" }}
       whileHover={{ y: -5 }}
       transition={{ duration: 0.3 }}
     >
       {/* Image Carousel */}
-      <div className="relative aspect-[4/3] overflow-hidden group">
+      <div className="relative aspect-[4/3] overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.img
             key={currentImageIndex}
@@ -120,14 +125,14 @@ const PropertyCard = ({ property }: { property: Property }) => {
 
         <button
           onClick={prevImage}
-          className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-white"
           aria-label="Prev image"
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
         <button
           onClick={nextImage}
-          className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-white"
           aria-label="Next image"
         >
           <ChevronRight className="w-4 h-4" />
@@ -141,9 +146,10 @@ const PropertyCard = ({ property }: { property: Property }) => {
                 e.stopPropagation();
                 setCurrentImageIndex(index);
               }}
-              className={`w-2 h-2 rounded-full transition-all ${
-                index === currentImageIndex ? "bg-primary w-4" : "bg-background/60"
+              className={`h-2 rounded-full transition-all ${
+                index === currentImageIndex ? "w-4" : "w-2 bg-white/40"
               }`}
+              style={index === currentImageIndex ? { background: "#E8C77E" } : undefined}
               aria-label={`Go image ${index + 1}`}
             />
           ))}
@@ -154,32 +160,32 @@ const PropertyCard = ({ property }: { property: Property }) => {
             e.stopPropagation();
             setIsLiked(!isLiked);
           }}
-          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center"
+          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center"
           aria-label="Like"
         >
           <Heart
             className={`w-5 h-5 transition-colors ${
-              isLiked ? "fill-red-500 text-red-500" : "text-foreground"
+              isLiked ? "fill-red-500 text-red-500" : "text-white"
             }`}
           />
         </button>
 
-        <span className="absolute top-3 left-3 bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
+        <span className="absolute top-3 left-3 text-xs font-semibold px-3 py-1 rounded-full" style={{ background: "rgba(197,160,89,0.2)", color: "#E8C77E", border: "1px solid rgba(197,160,89,0.3)" }}>
           {propertyTypeLabel(property.property_type)}
         </span>
       </div>
 
       <div className="p-5">
-        <div className="flex items-center gap-1 text-muted-foreground text-sm mb-2">
+        <div className="flex items-center gap-1 text-sm mb-2" style={{ color: "rgba(245,242,237,0.5)" }}>
           <MapPin className="w-4 h-4" />
           {locationText || "—"}
         </div>
 
-        <h3 className="font-serif text-xl font-bold text-foreground mb-3">
+        <h3 className="font-serif text-xl font-bold mb-3" style={{ color: "#F5F2ED" }}>
           {property.title}
         </h3>
 
-        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+        <div className="flex items-center gap-4 text-sm mb-4" style={{ color: "rgba(245,242,237,0.5)" }}>
           <span className="flex items-center gap-1">
             <Bed className="w-4 h-4" /> {property.bedrooms} Bed
           </span>
@@ -192,14 +198,14 @@ const PropertyCard = ({ property }: { property: Property }) => {
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-primary">
+          <span className="text-2xl font-bold" style={{ color: "#E8C77E" }}>
             {property.currency === "GBP" ? "£" : ""}
             {money(property.rent_monthly)}
-            <span className="text-sm font-normal text-muted-foreground">/month</span>
+            <span className="text-sm font-normal" style={{ color: "rgba(245,242,237,0.4)" }}>/month</span>
           </span>
 
           <Link to={`/properties/${property.slug}`}>
-            <Button size="sm" variant="outline">
+            <Button size="sm" variant="outline" style={{ borderColor: "rgba(197,160,89,0.35)", color: "#E8C77E", background: "transparent" }}>
               View Details
             </Button>
           </Link>
@@ -327,36 +333,46 @@ export default function PropertiesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: DARK }}>
       <Header />
-      <main className="pt-20">
+      <main className="pt-24">
         {/* Hero */}
-        <div className="relative h-64 md:h-80 overflow-hidden">
-          <img src={aboutImage} alt="Properties" className="w-full h-full object-cover grayscale" />
-          <div className="absolute inset-0 bg-foreground/60" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <h1 className="font-serif text-4xl md:text-5xl font-bold text-background mb-4">
-              Properties
-            </h1>
-            <div className="flex items-center gap-2 text-background/80 text-sm">
-              <a href="/" className="hover:text-primary transition-colors">Home</a>
-              <span>/</span>
-              <span className="text-primary">Properties</span>
+        <section className="relative overflow-hidden" style={{ background: DARK }}>
+          <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 60% 60% at 72% 50%, rgba(197,160,89,0.07) 0%, transparent 65%)" }} />
+          <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(197,160,89,0.4), transparent)" }} />
+          <div className="container-custom relative z-10 px-4">
+            <div className="grid lg:grid-cols-2 gap-6 items-center min-h-[44vh] py-16">
+              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+                <span className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.22em] uppercase rounded-full px-4 py-1.5 mb-5" style={{ color: "#E8C77E", background: "rgba(197,160,89,0.08)", border: "1px solid rgba(197,160,89,0.18)" }}>
+                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#E8C77E" }} />
+                  Verified Listings
+                </span>
+                <h1 className="font-serif font-bold leading-tight mb-4" style={{ fontSize: "clamp(2.4rem,5vw,4rem)", color: "#F5F2ED" }}>
+                  Find your{" "}
+                  <span style={{ background: "linear-gradient(135deg,#C5A059,#E8C77E,#C5A059)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>next home</span>
+                </h1>
+                <p className="text-base leading-relaxed max-w-md" style={{ color: "rgba(245,242,237,0.55)" }}>
+                  Browse verified, compliance-checked accommodation — matched and managed through Quantum Link™.
+                </p>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.2 }} className="relative h-[280px] sm:h-[360px] order-first lg:order-last">
+                <GlassGlobe />
+              </motion.div>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Filters */}
-        <div className="bg-card border-b border-border">
+        <div style={{ background: DARK2, borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
           <div className="container-custom py-6">
             <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
               <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: "rgba(245,242,237,0.4)" }} />
                 <Input
                   placeholder="Search by location or property name..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-12"
+                  className={`pl-10 h-12 ${darkField}`}
                 />
               </div>
 
@@ -366,16 +382,16 @@ export default function PropertiesPage() {
                   placeholder="City (ex: London)"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="h-12"
+                  className={`h-12 ${darkField}`}
                 />
               </div>
 
               <div className="flex flex-wrap gap-3">
                 <Select value={propertyType} onValueChange={setPropertyType}>
-                  <SelectTrigger className="w-[140px] h-12">
+                  <SelectTrigger className={`w-[140px] h-12 ${darkField}`}>
                     <SelectValue placeholder="Type" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-[hsl(222,44%,6%)] border-white/10 text-[#F5F2ED]">
                     <SelectItem value="all">All Types</SelectItem>
                     <SelectItem value="studio">Studio</SelectItem>
                     <SelectItem value="apartment">Apartment</SelectItem>
@@ -387,10 +403,10 @@ export default function PropertiesPage() {
                 </Select>
 
                 <Select value={priceRange} onValueChange={setPriceRange}>
-                  <SelectTrigger className="w-[160px] h-12">
+                  <SelectTrigger className={`w-[160px] h-12 ${darkField}`}>
                     <SelectValue placeholder="Price Range" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-[hsl(222,44%,6%)] border-white/10 text-[#F5F2ED]">
                     <SelectItem value="all">All Prices</SelectItem>
                     <SelectItem value="0-1000">Up to £1,000</SelectItem>
                     <SelectItem value="1000-2000">£1,000 - £2,000</SelectItem>
@@ -400,10 +416,10 @@ export default function PropertiesPage() {
                 </Select>
 
                 <Select value={bedrooms} onValueChange={setBedrooms}>
-                  <SelectTrigger className="w-[140px] h-12">
+                  <SelectTrigger className={`w-[140px] h-12 ${darkField}`}>
                     <SelectValue placeholder="Bedrooms" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-[hsl(222,44%,6%)] border-white/10 text-[#F5F2ED]">
                     <SelectItem value="all">All Beds</SelectItem>
                     <SelectItem value="1">1 Bedroom</SelectItem>
                     <SelectItem value="2">2 Bedrooms</SelectItem>
@@ -441,13 +457,13 @@ export default function PropertiesPage() {
           <div className="container-custom">
             <AnimatedSection className="mb-8">
               {loading ? (
-                <p className="text-muted-foreground">Loading properties...</p>
+                <p style={{ color: "rgba(245,242,237,0.5)" }}>Loading properties...</p>
               ) : error ? (
-                <p className="text-red-600">{error}</p>
+                <p className="text-red-400">{error}</p>
               ) : (
-                <p className="text-muted-foreground">
+                <p style={{ color: "rgba(245,242,237,0.5)" }}>
                   Showing{" "}
-                  <span className="font-semibold text-foreground">{filtered.length}</span>{" "}
+                  <span className="font-semibold" style={{ color: "#F5F2ED" }}>{filtered.length}</span>{" "}
                   properties
                 </p>
               )}
@@ -465,7 +481,7 @@ export default function PropertiesPage() {
 
                 {filtered.length === 0 && (
                   <div className="text-center py-16">
-                    <p className="text-muted-foreground text-lg">
+                    <p className="text-lg" style={{ color: "rgba(245,242,237,0.5)" }}>
                       No properties found matching your criteria.
                     </p>
                     <Button
