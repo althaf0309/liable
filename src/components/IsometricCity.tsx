@@ -60,7 +60,7 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
     renderer.setSize(W, H);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.0;
+    renderer.toneMappingExposure = 0.92;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     mount.appendChild(renderer.domElement);
@@ -83,12 +83,12 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
     // soft bloom for windows + sphere
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.55, 0.5, 0.22);
+    const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.32, 0.4, 0.6);
     composer.addPass(bloom);
     composer.addPass(new OutputPass());
 
-    scene.add(new THREE.AmbientLight(0x2a3550, 0.5));
-    const key = new THREE.DirectionalLight(0xfff0d8, 1.6);
+    scene.add(new THREE.AmbientLight(0x2a3550, 0.6));
+    const key = new THREE.DirectionalLight(0xfff0d8, 1.9);
     key.position.set(14, 22, 10);
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
@@ -106,7 +106,7 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
     scene.add(coreLight);
 
     const glowTex = makeGlowTexture();
-    const winTex = [makeWindowTexture(0.35), makeWindowTexture(0.5), makeWindowTexture(0.22)];
+    const winTex = [makeWindowTexture(0.2), makeWindowTexture(0.3), makeWindowTexture(0.12)];
 
     // turntable group
     const city = new THREE.Group();
@@ -132,11 +132,12 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
     const buildMats = winTex.map((t, i) =>
       new THREE.MeshStandardMaterial({
         color: bodyColors[i % bodyColors.length], roughness: 0.85, metalness: 0.08,
-        emissive: 0xffffff, emissiveMap: t, emissiveIntensity: 1.15,
+        emissive: 0xffce8a, emissiveMap: t, emissiveIntensity: 0.5,
       })
     );
     const treeLeaf = new THREE.MeshStandardMaterial({ color: 0x2f6b43, roughness: 0.9, flatShading: true });
     const treeTrunk = new THREE.MeshStandardMaterial({ color: 0x4a3a24 });
+    const linkTargets: { x: number; h: number; z: number }[] = [];
 
     const span = 4;
     const step = 2.0;
@@ -174,8 +175,26 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
         cap.position.set(x, h, z);
         cap.castShadow = true;
         city.add(cap);
+
+        if (linkTargets.length < 8 && dist < 3.4 && Math.random() < 0.3) linkTargets.push({ x, h, z });
       }
     }
+
+    // ── Quantum Link connections radiating to the neighbourhood ──
+    const SCENTER = new THREE.Vector3(0, 2.6, 0);
+    const linkPositions: number[] = [];
+    linkTargets.forEach((tg) => { linkPositions.push(SCENTER.x, SCENTER.y, SCENTER.z, tg.x, tg.h, tg.z); });
+    const linkGeo = new THREE.BufferGeometry();
+    linkGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(linkPositions), 3));
+    const linkLines = new THREE.LineSegments(linkGeo, new THREE.LineBasicMaterial({ color: 0xc5a059, transparent: true, opacity: 0.26, blending: THREE.AdditiveBlending, depthWrite: false }));
+    city.add(linkLines);
+
+    const pulseArr = new Float32Array(linkTargets.length * 3);
+    const pulseGeo = new THREE.BufferGeometry();
+    pulseGeo.setAttribute("position", new THREE.BufferAttribute(pulseArr, 3));
+    const pulsePts = new THREE.Points(pulseGeo, new THREE.PointsMaterial({ map: glowTex, color: 0xffe49a, size: 0.22, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+    city.add(pulsePts);
+    const pulsePhase = linkTargets.map(() => Math.random());
 
     // central glass sphere
     const sphere = new THREE.Mesh(
@@ -190,8 +209,8 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
     const core = new THREE.Mesh(new THREE.SphereGeometry(0.45, 24, 24), new THREE.MeshBasicMaterial({ color: 0xffe6b0 }));
     core.position.copy(sphere.position);
     scene.add(core);
-    const coreGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xffd98a, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false }));
-    coreGlow.scale.set(4, 4, 1);
+    const coreGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xffd98a, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false }));
+    coreGlow.scale.set(2.8, 2.8, 1);
     coreGlow.position.copy(sphere.position);
     scene.add(coreGlow);
     const ring = new THREE.Mesh(new THREE.TorusGeometry(2.45, 0.015, 8, 140), new THREE.MeshBasicMaterial({ color: 0xe8c77e, transparent: true, opacity: 0.6 }));
@@ -234,6 +253,18 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
         b.m.position.x += Math.sin(t + b.off) * 0.002;
         if (b.m.position.y > 7) b.m.position.y = -0.5;
       });
+
+      // travelling pulses from the core out to buildings
+      for (let i = 0; i < linkTargets.length; i++) {
+        pulsePhase[i] += 0.011;
+        if (pulsePhase[i] > 1) pulsePhase[i] -= 1;
+        const tg = linkTargets[i];
+        const p = pulsePhase[i];
+        pulseArr[i * 3] = SCENTER.x + (tg.x - SCENTER.x) * p;
+        pulseArr[i * 3 + 1] = SCENTER.y + (tg.h - SCENTER.y) * p;
+        pulseArr[i * 3 + 2] = SCENTER.z + (tg.z - SCENTER.z) * p;
+      }
+      pulseGeo.attributes.position.needsUpdate = true;
 
       composer.render();
 
