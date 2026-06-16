@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Target, Eye } from "lucide-react";
-import GlassGlobe from "@/components/GlassGlobe";
+import MissionCluster from "@/components/MissionCluster";
 
 const GOLD = "197,160,89";
 const GOLD_BRIGHT = "#E8C77E";
@@ -38,7 +38,7 @@ export default function Mission() {
               className="relative w-full"
               style={{ height: 420, maxWidth: 460, margin: "0 auto" }}
             >
-              <GlassGlobe />
+              <MissionCluster />
             </motion.div>
           </motion.div>
 
