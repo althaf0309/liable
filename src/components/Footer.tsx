@@ -101,7 +101,7 @@ function FooterBackdrop() {
 
 const quickLinks = [
   { name: "About LGS", href: "/about" },
-  { name: "Quantum Link™", href: "/quantum-link" },
+  { name: "Services", href: "/services" },
   { name: "News", href: "/news" },
   { name: "Contact", href: "/contact" },
 ];

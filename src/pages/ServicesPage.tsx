@@ -86,7 +86,7 @@ export default function ServicesPage() {
                     Explore All Services <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>
-                <Link to="/quantum-link">
+                <Link to="/about">
                   <Button variant="outline" className="h-12 px-6 gap-2.5 rounded-full text-sm font-semibold" style={{ borderColor: "rgba(245,242,237,0.2)", color: CREAM, background: "rgba(255,255,255,0.03)" }}>
                     <span className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: `rgba(${GOLD},0.16)` }}>
                       <Play className="w-3 h-3 fill-current" style={{ color: GOLD_BRIGHT }} />

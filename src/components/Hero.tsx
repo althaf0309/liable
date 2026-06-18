@@ -525,7 +525,7 @@ const Hero = () => {
               <ArrowRight className="w-4 h-4" />
             </button>
             <button
-              onClick={() => navigate("/quantum-link")}
+              onClick={() => navigate("/about")}
               className="inline-flex items-center gap-2.5 h-12 px-6 rounded-full text-sm font-semibold transition-colors"
               style={{ border: "1px solid rgba(245,242,237,0.2)", color: CREAM, background: "rgba(255,255,255,0.03)" }}
             >

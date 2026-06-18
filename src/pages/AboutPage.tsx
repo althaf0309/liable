@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import QuantumLinkContent from "@/components/QuantumLinkContent";
 
 const GOLD = "197,160,89";
 const GOLD_BRIGHT = "#E8C77E";
@@ -284,6 +285,9 @@ const AboutPage = () => {
             </div>
           </div>
         </section>
+
+        {/* ── QUANTUM LINK PLATFORM (moved into About) ──────────── */}
+        <QuantumLinkContent />
 
         {/* ── CTA BAR ───────────────────────────────────────────── */}
         <section className="relative py-16 overflow-hidden" style={{ background: DARK2 }}>

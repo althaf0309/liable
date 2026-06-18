@@ -30,7 +30,7 @@ function normalizeRole(role?: string): Role {
 const navLinks = [
   { name: "Home", href: "/", isRoute: true },
   { name: "About Us", href: "/about", isRoute: true },
-  { name: "Quantum Link", href: "/quantum-link", isRoute: true },
+  { name: "Services", href: "#services", hasDropdown: true },
   { name: "News", href: "/news", isRoute: true },
   { name: "Contact", href: "/contact", isRoute: true },
 ];
