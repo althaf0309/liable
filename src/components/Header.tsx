@@ -76,7 +76,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[hsl(222,48%,5%)]/90 backdrop-blur-md border-b border-[hsl(220,30%,14%)]">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/90 backdrop-blur-md border-b border-[rgba(197,160,89,0.16)]">
       <div className="container-custom">
         <div className="flex items-center justify-between h-24">
           <Link to="/" className="flex items-center">
@@ -96,7 +96,7 @@ const Header = () => {
                   onOpenChange={setIsServicesOpen}
                 >
                   <DropdownMenuTrigger asChild>
-                    <button className="text-sm font-medium text-foreground hover:text-primary transition-colors flex items-center gap-1 outline-none">
+                    <button className="text-sm font-medium text-[#F5F2ED] hover:text-[#E8C77E] transition-colors flex items-center gap-1 outline-none">
                       {link.name}
                       <ChevronDown
                         className={`w-4 h-4 transition-transform ${
@@ -107,12 +107,12 @@ const Header = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="start"
-                    className="bg-[hsl(220,44%,8%)] border border-[hsl(220,30%,14%)] shadow-2xl z-50"
+                    className="bg-[#0A0A0A] border border-[rgba(197,160,89,0.18)] shadow-2xl z-50"
                   >
                     <DropdownMenuItem asChild>
                       <Link
                         to="/services"
-                        className="cursor-pointer text-sm font-medium text-foreground hover:text-primary hover:bg-[hsl(220,40%,12%)] px-4 py-2"
+                        className="cursor-pointer text-sm font-medium text-[#F5F2ED] hover:text-[#E8C77E] hover:bg-[rgba(197,160,89,0.1)] px-4 py-2"
                       >
                         All Services
                       </Link>
@@ -121,7 +121,7 @@ const Header = () => {
                       <DropdownMenuItem key={option.name} asChild>
                         <Link
                           to={option.href}
-                          className="cursor-pointer text-sm font-medium text-foreground hover:text-primary hover:bg-[hsl(220,40%,12%)] px-4 py-2"
+                          className="cursor-pointer text-sm font-medium text-[#F5F2ED] hover:text-[#E8C77E] hover:bg-[rgba(197,160,89,0.1)] px-4 py-2"
                         >
                           {option.name}
                         </Link>
@@ -133,7 +133,7 @@ const Header = () => {
                 <Link
                   key={link.name}
                   to={link.href}
-                  className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+                  className="text-sm font-medium text-[#F5F2ED] hover:text-[#E8C77E] transition-colors"
                 >
                   {link.name}
                 </Link>
@@ -145,7 +145,7 @@ const Header = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full border border-border"
+              className="rounded-full border border-[rgba(197,160,89,0.25)]"
             >
               <Search className="w-5 h-5" />
             </Button>
@@ -159,7 +159,7 @@ const Header = () => {
               </Link>
             ) : (
               <div className="flex items-center gap-2">
-                <div className="text-sm font-medium text-foreground">
+                <div className="text-sm font-medium text-[#F5F2ED]">
                   {user.full_name || user.email}
                 </div>
                 <Button
@@ -186,18 +186,18 @@ const Header = () => {
         </div>
 
         {isMenuOpen && (
-          <nav className="lg:hidden py-4 border-t border-[hsl(220,30%,14%)]">
+          <nav className="lg:hidden py-4 border-t border-[rgba(197,160,89,0.16)]">
             <div className="flex flex-col gap-2">
               {navLinks.map((link) =>
                 link.hasDropdown ? (
                   <div key={link.name} className="flex flex-col">
-                    <span className="text-sm font-medium text-foreground px-4 py-2">
+                    <span className="text-sm font-medium text-[#F5F2ED] px-4 py-2">
                       {link.name}
                     </span>
                     <div className="flex flex-col pl-6">
                       <Link
                         to="/services"
-                        className="text-sm text-muted-foreground hover:text-primary transition-colors px-4 py-2"
+                        className="text-sm text-muted-foreground hover:text-[#E8C77E] transition-colors px-4 py-2"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         All Services
@@ -206,7 +206,7 @@ const Header = () => {
                         <Link
                           key={option.name}
                           to={option.href}
-                          className="text-sm text-muted-foreground hover:text-primary transition-colors px-4 py-2"
+                          className="text-sm text-muted-foreground hover:text-[#E8C77E] transition-colors px-4 py-2"
                           onClick={() => setIsMenuOpen(false)}
                         >
                           {option.name}
@@ -218,7 +218,7 @@ const Header = () => {
                   <Link
                     key={link.name}
                     to={link.href}
-                    className="text-sm font-medium text-foreground hover:text-primary transition-colors px-4 py-2"
+                    className="text-sm font-medium text-[#F5F2ED] hover:text-[#E8C77E] transition-colors px-4 py-2"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {link.name}
@@ -226,7 +226,7 @@ const Header = () => {
                 )
               )}
 
-              <div className="px-4 pt-4 border-t border-[hsl(220,30%,14%)] mt-2">
+              <div className="px-4 pt-4 border-t border-[rgba(197,160,89,0.16)] mt-2">
                 {!user ? (
                   <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="default" size="sm" className="w-full gap-2">

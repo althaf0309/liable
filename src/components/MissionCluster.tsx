@@ -20,8 +20,9 @@ function makeGlowTexture() {
 }
 
 /**
- * Mission visual — a slowly swirling golden spiral galaxy of light particles
- * with differential rotation (inner spins faster) around a bright core. Bloom.
+ * Mission visual — an elegant gyroscope of glowing gold orbital rings at
+ * different tilts, each precessing and carrying an orbiting light, around a
+ * bright pulsing core. Clean "rotation" instrument, bloom.
  */
 export default function MissionCluster() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -38,72 +39,68 @@ export default function MissionCluster() {
     renderer.setSize(W, H);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 0.98;
     mount.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(46, W / H, 0.1, 100);
-    camera.position.set(0, 1.4, 6);
+    camera.position.set(0, 0, 6);
 
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 1.0, 0.55, 0.12);
+    const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.55, 0.5, 0.28);
     composer.addPass(bloom);
     composer.addPass(new OutputPass());
 
     const glowTex = makeGlowTexture();
 
-    // ── spiral galaxy of particles ──
-    const galaxy = new THREE.Group();
-    galaxy.rotation.x = 1.0; // tilt the disk toward the viewer
-    scene.add(galaxy);
+    // backdrop glow
+    const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xc5a059, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false }));
+    halo.scale.set(7, 7, 1);
+    halo.position.set(0, 0, -2);
+    scene.add(halo);
 
-    const N = 2800;
-    const ARMS = 3;
-    const MAXR = 3.2;
-    const SPIN = 1.05;
-    const pos = new Float32Array(N * 3);
-    const col = new Float32Array(N * 3);
-    const rArr = new Float32Array(N);
-    const aArr = new Float32Array(N);
-    const yArr = new Float32Array(N);
+    const gyro = new THREE.Group();
+    scene.add(gyro);
 
-    const cIn = new THREE.Color(0xfff0c8);
-    const cOut = new THREE.Color(0xc5a059);
-
-    for (let i = 0; i < N; i++) {
-      const tR = Math.pow(Math.random(), 0.55);     // bias toward the centre
-      const r = 0.18 + tR * MAXR;
-      const arm = ((i % ARMS) / ARMS) * Math.PI * 2;
-      const jitterA = (Math.random() - 0.5) * (0.55 / (r * 0.6 + 0.4)); // arm thickness
-      const a = arm + r * SPIN + jitterA;
-      const y = (Math.random() - 0.5) * 0.5 * (1 - tR * 0.7);            // thin disk
-
-      rArr[i] = r; aArr[i] = a; yArr[i] = y;
-      pos[i * 3] = Math.cos(a) * r;
-      pos[i * 3 + 1] = y;
-      pos[i * 3 + 2] = Math.sin(a) * r;
-
-      const c = cIn.clone().lerp(cOut, Math.min(1, tR * 1.1));
-      col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
-    }
-
-    const gGeo = new THREE.BufferGeometry();
-    gGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    gGeo.setAttribute("color", new THREE.BufferAttribute(col, 3));
-    const gMat = new THREE.PointsMaterial({
-      map: glowTex, size: 0.11, transparent: true, vertexColors: true,
-      blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
+    // ── orbital rings ──
+    interface Ring { group: THREE.Group; precess: THREE.Vector3; orbiter: THREE.Sprite; ang: number; speed: number; R: number }
+    const rings: Ring[] = [];
+    const defs = [
+      { R: 1.25, tilt: [0.2, 0, 0], precess: [0, 0.004, 0], speed: 0.03, color: 0xe8c77e },
+      { R: 1.7, tilt: [Math.PI / 2.3, 0, 0.35], precess: [0, 0, 0.003], speed: -0.022, color: 0xc5a059 },
+      { R: 2.05, tilt: [-0.65, 0.5, 0], precess: [0.0025, 0, 0], speed: 0.017, color: 0xe8c77e },
+      { R: 0.95, tilt: [1.1, 0, 0.7], precess: [0, 0.005, 0], speed: 0.036, color: 0xffd98a },
+    ];
+    defs.forEach((d) => {
+      const g = new THREE.Group();
+      g.rotation.set(d.tilt[0], d.tilt[1], d.tilt[2]);
+      const torus = new THREE.Mesh(
+        new THREE.TorusGeometry(d.R, 0.012, 10, 160),
+        new THREE.MeshBasicMaterial({ color: d.color, transparent: true, opacity: 0.68, blending: THREE.AdditiveBlending, depthWrite: false })
+      );
+      g.add(torus);
+      // soft wider ring
+      const torus2 = new THREE.Mesh(
+        new THREE.TorusGeometry(d.R, 0.004, 8, 160),
+        new THREE.MeshBasicMaterial({ color: d.color, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending, depthWrite: false })
+      );
+      torus2.scale.setScalar(1.04);
+      g.add(torus2);
+      // orbiting light
+      const orbiter = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xfff0d0, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false }));
+      orbiter.scale.set(0.28, 0.28, 1);
+      g.add(orbiter);
+      gyro.add(g);
+      rings.push({ group: g, precess: new THREE.Vector3(d.precess[0], d.precess[1], d.precess[2]), orbiter, ang: Math.random() * Math.PI * 2, speed: d.speed, R: d.R });
     });
-    const stars = new THREE.Points(gGeo, gMat);
-    galaxy.add(stars);
 
-    // bright core + halo
-    const core = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 20), new THREE.MeshBasicMaterial({ color: 0xfff2d6 }));
-    galaxy.add(core);
-    const coreHalo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xffd98a, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false }));
-    coreHalo.scale.set(2.4, 2.4, 1);
-    galaxy.add(coreHalo);
+    // bright core
+    const core = new THREE.Mesh(new THREE.SphereGeometry(0.2, 22, 22), new THREE.MeshBasicMaterial({ color: 0xfff2d6 }));
+    scene.add(core);
+    const coreHalo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xffd98a, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false }));
+    coreHalo.scale.set(1.7, 1.7, 1);
+    scene.add(coreHalo);
 
     const mouse = { x: 0, y: 0 };
     const onMove = (e: MouseEvent) => {
@@ -119,30 +116,26 @@ export default function MissionCluster() {
 
     let t = 0;
     let animId = 0;
-    const positionAttr = gGeo.attributes.position as THREE.BufferAttribute;
     const animate = () => {
       animId = requestAnimationFrame(animate);
       if (!running) return;
       t += 0.016;
 
-      // differential rotation — inner particles orbit faster
-      const arr = positionAttr.array as Float32Array;
-      for (let i = 0; i < N; i++) {
-        const r = rArr[i];
-        aArr[i] += (0.22 / (r + 0.35)) * 0.016 * 8;
-        const a = aArr[i];
-        arr[i * 3] = Math.cos(a) * r;
-        arr[i * 3 + 2] = Math.sin(a) * r;
-      }
-      positionAttr.needsUpdate = true;
+      gyro.rotation.y += 0.0015;
+      rings.forEach((r) => {
+        r.group.rotation.x += r.precess.x;
+        r.group.rotation.y += r.precess.y;
+        r.group.rotation.z += r.precess.z;
+        r.ang += r.speed;
+        r.orbiter.position.set(Math.cos(r.ang) * r.R, Math.sin(r.ang) * r.R, 0);
+      });
 
-      galaxy.rotation.z += 0.0008;
-      const cs = 1 + Math.sin(t * 3) * 0.1;
+      const cs = 1 + Math.sin(t * 2.4) * 0.1;
       core.scale.setScalar(cs);
-      coreHalo.scale.set(2.4 * cs, 2.4 * cs, 1);
+      coreHalo.scale.set(1.7 * cs, 1.7 * cs, 1);
 
-      camera.position.x += (mouse.x * 0.6 - camera.position.x) * 0.04;
-      camera.position.y += (1.4 + mouse.y * 0.4 - camera.position.y) * 0.04;
+      camera.position.x += (mouse.x * 0.5 - camera.position.x) * 0.04;
+      camera.position.y += (mouse.y * 0.4 - camera.position.y) * 0.04;
       camera.lookAt(0, 0, 0);
 
       composer.render();
@@ -166,8 +159,6 @@ export default function MissionCluster() {
       window.removeEventListener("resize", onResize);
       mount.removeEventListener("mousemove", onMove);
       glowTex.dispose();
-      gGeo.dispose();
-      gMat.dispose();
       composer.dispose();
       renderer.dispose();
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);

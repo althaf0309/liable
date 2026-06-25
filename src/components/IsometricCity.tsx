@@ -137,7 +137,8 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
     );
     const treeLeaf = new THREE.MeshStandardMaterial({ color: 0x2f6b43, roughness: 0.9, flatShading: true });
     const treeTrunk = new THREE.MeshStandardMaterial({ color: 0x4a3a24 });
-    const linkTargets: { x: number; h: number; z: number }[] = [];
+    const eyePos = { x: 4.6, z: 4.4 };
+    const benPos = { x: -4.9, z: -4.0 };
 
     const span = 4;
     const step = 2.0;
@@ -145,10 +146,13 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
       for (let gz = -span; gz <= span; gz++) {
         const dist = Math.hypot(gx, gz);
         if (dist < 1.7) continue;             // clear center for sphere
-        if (Math.random() < 0.16) continue;   // plazas / gaps
+        if (Math.random() < 0.07) continue;   // a few plazas / gaps
 
         const x = gx * step + (Math.random() - 0.5) * 0.35;
         const z = gz * step + (Math.random() - 0.5) * 0.35;
+
+        if (Math.hypot(x - eyePos.x, z - eyePos.z) < 2.4) continue;    // London Eye clearance
+        if (Math.hypot(x - benPos.x, z - benPos.z) < 1.7) continue;    // Big Ben clearance
 
         if (Math.random() < 0.1) {
           const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.09, 0.35, 6), treeTrunk);
@@ -160,9 +164,9 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
           continue;
         }
 
-        const h = 1.0 + Math.random() * (dist < 3 ? 3.6 : 2.2);
-        const w = 0.9 + Math.random() * 0.5;
-        const d = 0.9 + Math.random() * 0.5;
+        const h = 1.2 + Math.random() * (dist < 3 ? 4.8 : 3.0);
+        const w = 0.78 + Math.random() * 0.6;
+        const d = 0.78 + Math.random() * 0.6;
         const mat = buildMats[Math.floor(Math.random() * buildMats.length)];
         const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
         mesh.position.set(x, h / 2, z);
@@ -175,26 +179,78 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
         cap.position.set(x, h, z);
         cap.castShadow = true;
         city.add(cap);
-
-        if (linkTargets.length < 8 && dist < 3.4 && Math.random() < 0.3) linkTargets.push({ x, h, z });
       }
     }
 
-    // ── Quantum Link connections radiating to the neighbourhood ──
-    const SCENTER = new THREE.Vector3(0, 2.6, 0);
-    const linkPositions: number[] = [];
-    linkTargets.forEach((tg) => { linkPositions.push(SCENTER.x, SCENTER.y, SCENTER.z, tg.x, tg.h, tg.z); });
-    const linkGeo = new THREE.BufferGeometry();
-    linkGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(linkPositions), 3));
-    const linkLines = new THREE.LineSegments(linkGeo, new THREE.LineBasicMaterial({ color: 0xc5a059, transparent: true, opacity: 0.26, blending: THREE.AdditiveBlending, depthWrite: false }));
-    city.add(linkLines);
+    // ── landmark towers (London-style skyline) ──
+    const landMat = new THREE.MeshStandardMaterial({ color: 0x222c44, roughness: 0.45, metalness: 0.35, emissive: 0x5a4a20, emissiveIntensity: 0.25, envMapIntensity: 1.2 });
+    const shard = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.6, 7.6, 4), landMat); // The Shard — tapered spire
+    shard.position.set(5.4, 3.8, -5.0);
+    shard.rotation.y = Math.PI / 4;
+    shard.castShadow = true;
+    city.add(shard);
+    const gherkin = new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 24), landMat); // The Gherkin — rounded tower
+    gherkin.scale.set(1, 3.0, 1);
+    gherkin.position.set(-5.3, 1.6, 5.1);
+    gherkin.castShadow = true;
+    city.add(gherkin);
 
-    const pulseArr = new Float32Array(linkTargets.length * 3);
-    const pulseGeo = new THREE.BufferGeometry();
-    pulseGeo.setAttribute("position", new THREE.BufferAttribute(pulseArr, 3));
-    const pulsePts = new THREE.Points(pulseGeo, new THREE.PointsMaterial({ map: glowTex, color: 0xffe49a, size: 0.22, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
-    city.add(pulsePts);
-    const pulsePhase = linkTargets.map(() => Math.random());
+    // ── London Eye ──
+    const wheelMat = new THREE.MeshStandardMaterial({ color: 0xaebfdc, roughness: 0.4, metalness: 0.55, emissive: 0x24406e, emissiveIntensity: 0.4, envMapIntensity: 1.3 });
+    const eye = new THREE.Group();
+    eye.position.set(eyePos.x, 1.9, eyePos.z);
+    eye.rotation.y = -0.6;
+    const eyeWheel = new THREE.Group();
+    const rimR = 1.5;
+    eyeWheel.add(new THREE.Mesh(new THREE.TorusGeometry(rimR, 0.03, 8, 64), wheelMat));
+    eyeWheel.add(new THREE.Mesh(new THREE.TorusGeometry(rimR * 0.93, 0.014, 6, 64), wheelMat));
+    const spokePos: number[] = [];
+    const capGeo = new THREE.BoxGeometry(0.1, 0.1, 0.18);
+    const capMat = new THREE.MeshStandardMaterial({ color: 0xcfe0ff, roughness: 0.5, emissive: 0x8aa0c8, emissiveIntensity: 0.35 });
+    const NS = 18;
+    for (let k = 0; k < NS; k++) {
+      const a = (k / NS) * Math.PI * 2;
+      spokePos.push(0, 0, 0, Math.cos(a) * rimR, Math.sin(a) * rimR, 0);
+      const cap = new THREE.Mesh(capGeo, capMat);
+      cap.position.set(Math.cos(a) * rimR, Math.sin(a) * rimR, 0);
+      eyeWheel.add(cap);
+    }
+    const spokeGeo = new THREE.BufferGeometry();
+    spokeGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(spokePos), 3));
+    eyeWheel.add(new THREE.LineSegments(spokeGeo, new THREE.LineBasicMaterial({ color: 0x9fb4d8, transparent: true, opacity: 0.5 })));
+    eyeWheel.add(new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), wheelMat));
+    eye.add(eyeWheel);
+    const legGeo = new THREE.CylinderGeometry(0.04, 0.05, 2.5, 8);
+    ([[-0.55, 0.5], [0.55, 0.5], [-0.55, -0.5], [0.55, -0.5]] as [number, number][]).forEach(([lx, lz]) => {
+      const leg = new THREE.Mesh(legGeo, wheelMat);
+      leg.position.set(lx, -1.05, lz);
+      leg.rotation.x = lz > 0 ? 0.28 : -0.28;
+      leg.rotation.z = lx > 0 ? -0.28 : 0.28;
+      eye.add(leg);
+    });
+    city.add(eye);
+
+    // ── Big Ben ──
+    const stoneMat = new THREE.MeshStandardMaterial({ color: 0x6b5a3a, roughness: 0.7, metalness: 0.1, emissive: 0x3a2e15, emissiveIntensity: 0.2 });
+    const ben = new THREE.Group();
+    ben.position.set(benPos.x, 0, benPos.z);
+    const benTower = new THREE.Mesh(new THREE.BoxGeometry(0.72, 4.2, 0.72), stoneMat);
+    benTower.position.y = 2.1; benTower.castShadow = true; ben.add(benTower);
+    const clockMat = new THREE.MeshBasicMaterial({ color: 0xfff0c0 });
+    ([[0, 0.37], [0, -0.37], [0.37, 0], [-0.37, 0]] as [number, number][]).forEach(([cx, cz]) => {
+      const clock = new THREE.Mesh(new THREE.CircleGeometry(0.16, 24), clockMat);
+      clock.position.set(cx, 3.6, cz);
+      if (cz > 0) clock.rotation.y = 0;
+      else if (cz < 0) clock.rotation.y = Math.PI;
+      else if (cx > 0) clock.rotation.y = Math.PI / 2;
+      else clock.rotation.y = -Math.PI / 2;
+      ben.add(clock);
+    });
+    const belfry = new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.5, 0.82), stoneMat);
+    belfry.position.y = 4.45; ben.add(belfry);
+    const spire = new THREE.Mesh(new THREE.ConeGeometry(0.56, 1.3, 4), stoneMat);
+    spire.position.y = 5.35; spire.rotation.y = Math.PI / 4; spire.castShadow = true; ben.add(spire);
+    city.add(ben);
 
     // central glass sphere
     const sphere = new THREE.Mesh(
@@ -242,6 +298,7 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
       t += 0.01;
 
       city.rotation.y += 0.0015;
+      eyeWheel.rotation.z += 0.0035;
       const sy = 2.6 + Math.sin(t) * 0.12;
       sphere.position.y = sy; core.position.y = sy; coreGlow.position.y = sy; ring.position.y = sy;
       ring.rotation.z = t * 0.4;
@@ -253,18 +310,6 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
         b.m.position.x += Math.sin(t + b.off) * 0.002;
         if (b.m.position.y > 7) b.m.position.y = -0.5;
       });
-
-      // travelling pulses from the core out to buildings
-      for (let i = 0; i < linkTargets.length; i++) {
-        pulsePhase[i] += 0.011;
-        if (pulsePhase[i] > 1) pulsePhase[i] -= 1;
-        const tg = linkTargets[i];
-        const p = pulsePhase[i];
-        pulseArr[i * 3] = SCENTER.x + (tg.x - SCENTER.x) * p;
-        pulseArr[i * 3 + 1] = SCENTER.y + (tg.h - SCENTER.y) * p;
-        pulseArr[i * 3 + 2] = SCENTER.z + (tg.z - SCENTER.z) * p;
-      }
-      pulseGeo.attributes.position.needsUpdate = true;
 
       composer.render();
 
