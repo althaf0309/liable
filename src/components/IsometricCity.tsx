@@ -115,7 +115,7 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
     // ground
     const ground = new THREE.Mesh(
       new THREE.BoxGeometry(22, 0.5, 22),
-      new THREE.MeshStandardMaterial({ color: 0x0b0e16, roughness: 1, metalness: 0 })
+      new THREE.MeshStandardMaterial({ color: 0x0a0d14, roughness: 0.55, metalness: 0.4, envMapIntensity: 1.0 })
     );
     ground.position.y = -0.25;
     ground.receiveShadow = true;

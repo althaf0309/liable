@@ -133,7 +133,7 @@ const Footer = () => {
       <div className="relative z-10 container-custom pt-14 pb-10 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
           <Link to="/" className="inline-flex items-center justify-center mb-4">
-            <img src={logo} alt="LGS — Liable Group Services" className="h-16 md:h-20 w-auto drop-shadow-[0_0_24px_rgba(197,160,89,0.4)]" />
+            <img src={logo} alt="LGS — Liable Group Services" className="h-24 md:h-28 w-auto drop-shadow-[0_0_24px_rgba(197,160,89,0.4)]" />
           </Link>
           <p className="font-serif text-lg md:text-xl font-bold" style={{ color: "#F5F2ED" }}>
             Student &amp; Migrant Lifestyle Infrastructure

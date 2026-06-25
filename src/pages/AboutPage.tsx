@@ -177,7 +177,7 @@ const AboutPage = () => {
         </section>
 
         {/* ── MISSION / VISION ──────────────────────────────────── */}
-        <section className="relative py-24 overflow-hidden" style={{ background: DARK }}>
+        <section className="relative py-24 overflow-hidden" style={{ background: "#F5F2ED" }}>
           <div className="absolute inset-0 pointer-events-none opacity-[0.5]"
             style={{
               backgroundImage: `radial-gradient(rgba(${GOLD},0.16) 1px, transparent 1px)`,
@@ -190,12 +190,12 @@ const AboutPage = () => {
               {/* Mission */}
               <motion.div initial={{ opacity: 0, x: -28 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
                 className="flex flex-col items-center md:items-end gap-4 text-center md:text-right">
-                <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: `rgba(${GOLD},0.1)`, border: `1px solid rgba(${GOLD},0.25)` }}>
-                  <Target className="w-6 h-6" style={{ color: GOLD_BRIGHT }} />
+                <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: `rgba(${GOLD},0.14)`, border: `1px solid rgba(${GOLD},0.3)` }}>
+                  <Target className="w-6 h-6" style={{ color: "#9A6F2A" }} />
                 </div>
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.22em] mb-2" style={{ color: GOLD_BRIGHT }}>Our Mission</p>
-                  <p className="text-sm leading-relaxed max-w-xs" style={{ color: "rgba(245,242,237,0.6)" }}>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.22em] mb-2" style={{ color: "#9A6F2A" }}>Our Mission</p>
+                  <p className="text-sm leading-relaxed max-w-xs" style={{ color: "#5A4F44" }}>
                     To deliver trusted, tech-enabled living solutions that empower students and landlords
                     while raising the standard of property management.
                   </p>
@@ -212,12 +212,12 @@ const AboutPage = () => {
               {/* Vision */}
               <motion.div initial={{ opacity: 0, x: 28 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
                 className="flex flex-col items-center md:items-start gap-4 text-center md:text-left">
-                <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: `rgba(${GOLD},0.1)`, border: `1px solid rgba(${GOLD},0.25)` }}>
-                  <Eye className="w-6 h-6" style={{ color: GOLD_BRIGHT }} />
+                <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: `rgba(${GOLD},0.14)`, border: `1px solid rgba(${GOLD},0.3)` }}>
+                  <Eye className="w-6 h-6" style={{ color: "#9A6F2A" }} />
                 </div>
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.22em] mb-2" style={{ color: GOLD_BRIGHT }}>Our Vision</p>
-                  <p className="text-sm leading-relaxed max-w-xs" style={{ color: "rgba(245,242,237,0.6)" }}>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.22em] mb-2" style={{ color: "#9A6F2A" }}>Our Vision</p>
+                  <p className="text-sm leading-relaxed max-w-xs" style={{ color: "#5A4F44" }}>
                     To become the world's most reliable living infrastructure platform — where every
                     connection creates value and every experience builds trust.
                   </p>

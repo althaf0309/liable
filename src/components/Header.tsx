@@ -78,12 +78,12 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/90 backdrop-blur-md border-b border-[rgba(197,160,89,0.16)]">
       <div className="container-custom">
-        <div className="flex items-center justify-between h-24">
+        <div className="flex items-center justify-between h-28">
           <Link to="/" className="flex items-center">
             <img
               src={logo}
               alt="Liable"
-              className="h-16 md:h-20 lg:h-24 w-auto drop-shadow-lg"
+              className="h-24 md:h-28 lg:h-32 w-auto drop-shadow-lg"
             />
           </Link>
 
