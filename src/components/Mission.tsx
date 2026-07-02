@@ -8,7 +8,7 @@ const BG = "#F5F2ED";         // Heirloom Cream
 const HEAD = "#241C14";       // near-obsidian heading
 const BODY = "#5A4F44";       // warm body text
 
-const MISSION_IMG = "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fm=jpg&q=80&w=1200&auto=format&fit=crop";
+const MISSION_IMG = "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?fm=jpg&q=85&w=1400&auto=format&fit=crop";
 
 export default function Mission() {
   return (
@@ -32,7 +32,7 @@ export default function Mission() {
             className="relative order-1"
           >
             <div className="relative rounded-3xl overflow-hidden" style={{ border: `1px solid rgba(${GOLD},0.3)`, boxShadow: "0 30px 70px rgba(36,28,20,0.18)" }}>
-              <img src={MISSION_IMG} alt="Comfortable, verified living" className="w-full h-[320px] lg:h-[440px] object-cover" />
+              <img src={MISSION_IMG} alt="London skyline and Tower Bridge" className="w-full h-[320px] lg:h-[440px] object-cover" />
               <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(36,28,20,0.45) 0%, transparent 45%)" }} />
               {/* floating accent badge */}
               <motion.div
@@ -45,8 +45,8 @@ export default function Mission() {
                   <ShieldCheck className="w-4.5 h-4.5" style={{ color: TEAL }} />
                 </span>
                 <div>
-                  <p className="font-serif font-bold text-sm leading-none" style={{ color: HEAD }}>Verified & Trusted</p>
-                  <p className="text-[11px] mt-0.5" style={{ color: BODY }}>A human at every decision</p>
+                  <p className="font-serif font-bold text-sm leading-none" style={{ color: HEAD }}>London Trust Layer</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: BODY }}>Human-led housing operations</p>
                 </div>
               </motion.div>
             </div>

@@ -12,7 +12,20 @@ const GOLD_BRIGHT = "#E8C77E";
 const CREAM = "#F5F2ED";
 const DARK = "hsl(222,52%,2%)";
 
-// Emissive window texture — black facade, scattered lit windows
+const visionStats = [
+  { value: "London", label: "operational base" },
+  { value: "Global", label: "student movement" },
+  { value: "24/7", label: "support continuity" },
+];
+
+const orbitLabels = [
+  { title: "Students", body: "arrival to renewal", className: "left-3 top-10 md:left-8 md:top-16" },
+  { title: "Landlords", body: "visibility and trust", className: "right-3 top-12 md:right-10 md:top-20" },
+  { title: "Agencies", body: "referrals and lifecycle", className: "left-5 bottom-16 md:left-12 md:bottom-20" },
+  { title: "Operations", body: "one connected view", className: "right-4 bottom-14 md:right-14 md:bottom-20" },
+];
+
+// Emissive window texture: black facade, scattered lit windows
 function makeWindowTexture(litChance: number) {
   const c = document.createElement("canvas");
   c.width = 64; c.height = 128;
@@ -67,7 +80,7 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
 
     const scene = new THREE.Scene();
 
-    // image-based lighting → realistic glass + subtle reflections
+    // Image-based lighting for realistic glass and subtle reflections.
     const pmrem = new THREE.PMREMGenerator(renderer);
     scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
     pmrem.dispose();
@@ -182,20 +195,20 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
       }
     }
 
-    // ── landmark towers (London-style skyline) ──
+    // Landmark towers: London-style skyline.
     const landMat = new THREE.MeshStandardMaterial({ color: 0x222c44, roughness: 0.45, metalness: 0.35, emissive: 0x5a4a20, emissiveIntensity: 0.25, envMapIntensity: 1.2 });
-    const shard = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.6, 7.6, 4), landMat); // The Shard — tapered spire
+    const shard = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.6, 7.6, 4), landMat); // The Shard: tapered spire.
     shard.position.set(5.4, 3.8, -5.0);
     shard.rotation.y = Math.PI / 4;
     shard.castShadow = true;
     city.add(shard);
-    const gherkin = new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 24), landMat); // The Gherkin — rounded tower
+    const gherkin = new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 24), landMat); // The Gherkin: rounded tower.
     gherkin.scale.set(1, 3.0, 1);
     gherkin.position.set(-5.3, 1.6, 5.1);
     gherkin.castShadow = true;
     city.add(gherkin);
 
-    // ── London Eye ──
+    // London Eye.
     const wheelMat = new THREE.MeshStandardMaterial({ color: 0xaebfdc, roughness: 0.4, metalness: 0.55, emissive: 0x24406e, emissiveIntensity: 0.4, envMapIntensity: 1.3 });
     const eye = new THREE.Group();
     eye.position.set(eyePos.x, 1.9, eyePos.z);
@@ -230,7 +243,7 @@ function CityCanvas({ labelRef }: { labelRef: React.RefObject<HTMLDivElement> })
     });
     city.add(eye);
 
-    // ── Big Ben ──
+    // Big Ben.
     const stoneMat = new THREE.MeshStandardMaterial({ color: 0x6b5a3a, roughness: 0.7, metalness: 0.1, emissive: 0x3a2e15, emissiveIntensity: 0.2 });
     const ben = new THREE.Group();
     ben.position.set(benPos.x, 0, benPos.z);
@@ -355,9 +368,10 @@ export default function IsometricCity() {
   const labelRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section className="relative py-24 overflow-hidden" style={{ background: DARK }}>
+    <section className="relative overflow-hidden py-24 md:py-28" style={{ background: DARK }}>
       <div className="absolute top-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg, transparent, rgba(${GOLD},0.4), transparent)` }} />
-      <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 60% 50% at 50% 40%, rgba(${GOLD},0.06) 0%, transparent 70%)` }} />
+      <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 58% 48% at 50% 39%, rgba(${GOLD},0.11) 0%, rgba(${GOLD},0.035) 34%, transparent 72%)` }} />
+      <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none" style={{ background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.34))" }} />
 
       <div className="container-custom px-4 relative z-10">
         <motion.div
@@ -365,7 +379,7 @@ export default function IsometricCity() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.7 }}
-          className="text-center max-w-2xl mx-auto mb-10"
+          className="text-center max-w-3xl mx-auto mb-10"
         >
           <span className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.22em] uppercase rounded-full px-4 py-1.5 mb-5"
             style={{ color: GOLD_BRIGHT, background: `rgba(${GOLD},0.08)`, border: `1px solid rgba(${GOLD},0.16)` }}>
@@ -373,15 +387,27 @@ export default function IsometricCity() {
             Our Vision
           </span>
           <h2 className="font-serif font-bold leading-tight mb-4" style={{ fontSize: "clamp(2rem,4vw,3rem)", color: CREAM }}>
-            One platform at the centre of{" "}
+            London-born infrastructure for{" "}
             <span style={{ background: `linear-gradient(135deg,#C5A059,${GOLD_BRIGHT},#C5A059)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
               every neighbourhood
             </span>
           </h2>
-          <p className="text-base leading-relaxed" style={{ color: "rgba(245,242,237,0.55)" }}>
-            To build a globally recognised operational platform that connects people, properties,
-            and services across international housing ecosystems.
+          <p className="mx-auto max-w-2xl text-base leading-relaxed md:text-lg" style={{ color: "rgba(245,242,237,0.62)" }}>
+            A premium operating layer connecting students, landlords, agency partners, and support teams
+            from London into a global student-living network.
           </p>
+          <div className="mt-7 grid grid-cols-3 gap-3">
+            {visionStats.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-lg border px-3 py-3"
+                style={{ borderColor: `rgba(${GOLD},0.18)`, background: "rgba(255,255,255,0.035)" }}
+              >
+                <p className="font-serif text-lg font-bold md:text-xl" style={{ color: CREAM }}>{item.value}</p>
+                <p className="mt-0.5 text-[11px] uppercase tracking-[0.14em]" style={{ color: "rgba(245,242,237,0.48)" }}>{item.label}</p>
+              </div>
+            ))}
+          </div>
         </motion.div>
 
         <motion.div
@@ -389,13 +415,30 @@ export default function IsometricCity() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.9 }}
-          className="relative mx-auto"
+          className="relative mx-auto overflow-hidden rounded-2xl border"
           style={{ maxWidth: 1000, height: 560 }}
         >
+          <div className="absolute inset-0 z-[1] pointer-events-none" style={{ borderColor: `rgba(${GOLD},0.18)`, boxShadow: `inset 0 0 80px rgba(${GOLD},0.08)` }} />
           <CityCanvas labelRef={labelRef} />
+          {orbitLabels.map((item) => (
+            <div
+              key={item.title}
+              className={`absolute z-[2] hidden rounded-xl border px-4 py-3 text-left backdrop-blur-md sm:block ${item.className}`}
+              style={{ borderColor: `rgba(${GOLD},0.18)`, background: "rgba(7,10,18,0.58)", boxShadow: "0 18px 60px rgba(0,0,0,0.24)" }}
+            >
+              <p className="text-sm font-semibold" style={{ color: CREAM }}>{item.title}</p>
+              <p className="mt-0.5 text-xs" style={{ color: "rgba(245,242,237,0.56)" }}>{item.body}</p>
+            </div>
+          ))}
+          <div
+            className="absolute left-1/2 top-5 z-[2] -translate-x-1/2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] backdrop-blur-md"
+            style={{ color: GOLD_BRIGHT, borderColor: `rgba(${GOLD},0.2)`, background: "rgba(7,10,18,0.62)" }}
+          >
+            London to global housing operations
+          </div>
           <div ref={labelRef} className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none">
             <span className="font-serif font-bold text-lg md:text-xl whitespace-nowrap" style={{ color: CREAM, textShadow: `0 0 24px rgba(${GOLD},0.9), 0 0 48px rgba(${GOLD},0.5)` }}>
-              Quantum&nbsp;Link™
+              Quantum&nbsp;Link
             </span>
           </div>
         </motion.div>
@@ -403,3 +446,4 @@ export default function IsometricCity() {
     </section>
   );
 }
+
